@@ -1,10 +1,5 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import App from './App';
-import './index.css';
+// NOTE: This file has been deprecated.
+// The project now uses `src/index.js` as the application entry.
+// `main.jsx` is kept for historical reasons and can be removed.
 
-createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+export default null;

@@ -1,0 +1,25 @@
+@import './sidebar.css';
+
+:root {
+  --bg: #f6f8fb;
+  --text: #0f172a;
+  --primary: #183a8a;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+  color: var(--text);
+}
+a {
+  color: var(--primary);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
