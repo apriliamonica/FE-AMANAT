@@ -17,3 +17,15 @@ body {
   border-radius: 8px;
   box-shadow: 0 6px 18px rgba(2, 6, 23, 0.08);
 }
+
+.btn-primary {
+  background: #183a8a;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  opacity: 0.95;
+}
