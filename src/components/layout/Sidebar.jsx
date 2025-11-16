@@ -8,10 +8,15 @@ import {
   BarChart3,
   Settings,
   X,
-  FileStack,
+  // FileStack dihapus dari import
 } from 'lucide-react';
 import { cn } from '../../utils/helpers';
 import { getInitials } from '../../utils/helpers';
+
+// Jika Anda menggunakan framework seperti Next.js,
+// Anda mungkin perlu mengimpor logo:
+// import logoImage from '/path/to/your/logo.png';
+// Dan gunakan <img src={logoImage.src} ... />
 
 const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
   const location = useLocation();
@@ -82,7 +87,13 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
         <div className='flex items-center justify-between p-6 border-b border-primary-700'>
           <div className='flex items-center space-x-3'>
             <div className='w-10 h-10 bg-white rounded-lg flex items-center justify-center'>
-              <FileStack className='w-6 h-6 text-primary-800' />
+              {/* === PERUBAHAN ADA DI SINI === */}
+              <img
+                src='/logoYPTU.png' // Ganti dengan path ke logo Anda di folder public
+                alt='Logo AMANAT'
+                className='w-6 h-6'
+              />
+              {/* ============================== */}
             </div>
             <div>
               <h1 className='text-xl font-bold text-white'>AMANAT</h1>
@@ -144,5 +155,3 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
 };
 
 export default Sidebar;
-
-// Lokasi: src/components/layout/Sidebar.jsx
