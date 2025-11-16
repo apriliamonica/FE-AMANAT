@@ -1,28 +1,28 @@
 {
-  "name": "fe-amanat-starter",
-  "version": "0.1.0",
-  "private": true,
+  "name": "fe-amanat",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint . --ext .js,.jsx",
-    "lint:fix": "eslint . --ext .js,.jsx --fix",
-    "format": "prettier --write ."
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apriliamonica/FE-AMANAT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apriliamonica/FE-AMANAT/issues"
+  },
+  "homepage": "https://github.com/apriliamonica/FE-AMANAT#readme",
+  "description": "",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "vite": "^7.2.2"
   },
   "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "react-hot-toast": "^2.6.0",
-    "react-router-dom": "^7.9.6"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.0",
-    "eslint": "^8.39.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "prettier": "^2.8.8",
-    "vite": "^5.0.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }
