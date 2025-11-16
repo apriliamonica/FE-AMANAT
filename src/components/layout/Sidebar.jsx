@@ -67,7 +67,7 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
           <div className='flex items-center space-x-3'>
             <div className='w-10 h-10 bg-white rounded-lg flex items-center justify-center'>
               <img
-                src='/logo.png' // Path logo Anda
+                src='public/logoYPTU.png' // Path logo Anda
                 alt='Logo AMANAT'
                 className='w-6 h-6'
               />
