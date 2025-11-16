@@ -87,13 +87,7 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
         <div className='flex items-center justify-between p-6 border-b border-primary-700'>
           <div className='flex items-center space-x-3'>
             <div className='w-10 h-10 bg-white rounded-lg flex items-center justify-center'>
-              {/* === PERUBAHAN ADA DI SINI === */}
-              <img
-                src='/logoYPTU.png' // Ganti dengan path ke logo Anda di folder public
-                alt='Logo AMANAT'
-                className='w-6 h-6'
-              />
-              {/* ============================== */}
+              <img src='/logoYPTU.png' alt='Logo AMANAT' className='w-6 h-6' />
             </div>
             <div>
               <h1 className='text-xl font-bold text-white'>AMANAT</h1>
