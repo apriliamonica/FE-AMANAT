@@ -7,6 +7,7 @@ import MainLayout from './components/layout/MainLayout';
 // Pages
 import Login from './pages/auth/Login';
 import Dashboard from './pages/dashboard/Dashboard';
+import SuratMasukList from './pages/surat-masuk/SuratMasukList';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -38,16 +39,9 @@ function App() {
           >
             <Route index element={<Navigate to='/dashboard' replace />} />
             <Route path='dashboard' element={<Dashboard />} />
+            <Route path='surat-masuk' element={<SuratMasukList />} />
 
-            {/* Placeholder routes - akan dibuat nanti */}
-            <Route
-              path='surat-masuk'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Surat Masuk (Coming Soon)
-                </div>
-              }
-            />
+            {/* Placeholder routes */}
             <Route
               path='surat-keluar'
               element={
@@ -96,30 +90,7 @@ function App() {
       </BrowserRouter>
 
       {/* Toast Notifications */}
-      <Toaster
-        position='top-right'
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: '#363636',
-            color: '#fff',
-          },
-          success: {
-            duration: 3000,
-            iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
-            },
-          },
-          error: {
-            duration: 4000,
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
-            },
-          },
-        }}
-      />
+      <Toaster position='top-right' />
     </>
   );
 }
