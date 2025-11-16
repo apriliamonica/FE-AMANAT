@@ -23,9 +23,11 @@ const Header = ({ onMenuClick }) => {
 
           {/* Logo AMANAT untuk mobile */}
           <div className='lg:hidden flex items-center space-x-2'>
-            <div className='w-8 h-8 bg-primary-800 rounded-lg flex items-center justify-center'>
-              <span className='text-white font-bold text-sm'>A</span>
-            </div>
+            <img
+              src='public/logoYPTU.png'
+              alt='Logo AMANAT'
+              className='w-6 h-6'
+            />
             <span className='font-bold text-gray-900'>AMANAT</span>
           </div>
         </div>

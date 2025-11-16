@@ -4,17 +4,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Palet Warna Hijau & Kuning
         primary: {
-          50: '#e8eaf6',
-          100: '#c5cae9',
-          200: '#9fa8da',
-          300: '#7986cb',
-          400: '#5c6bc0',
-          500: '#3f51b5',
-          600: '#3949ab',
-          700: '#303f9f', // Warna sidebar
-          800: '#283593', // Warna sidebar gelap
-          900: '#1a237e',
+          50: '#f0fdf4', // Mint Cream (sangat muda)
+          100: '#dcffdf', // Honeydew
+          200: '#c5f5ce', // Mint
+          300: '#a7e4b2', // Light Green
+          400: '#7ac888', // Medium Aquamarine
+          500: '#4caf50', // Green (Standard)
+          600: '#43a047', // India Green
+          700: '#388e3c', // Warna sidebar utama (hijau sedang)
+          800: '#2e7d32', // Warna sidebar gelap (hijau botol)
+          900: '#1b5e20', // Dark Green
+        },
+        secondary: {
+          // Skala kuning mustard
+          100: '#fff9e6',
+          400: '#ffecb3',
+          500: '#ffeb3b', // Kuning terang untuk highlight
+          600: '#fbc02d',
+          700: '#ffa000',
         },
       },
     },
