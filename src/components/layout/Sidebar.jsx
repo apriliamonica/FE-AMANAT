@@ -4,7 +4,7 @@ import '../../styles/sidebar.css';
 export default function Sidebar() {
   return (
     <aside className="app-sidebar">
-      <div className="sidebar-brand">FE-AMANAT</div>
+      <div className="sidebar-brand">AMANAT</div>
 
       <nav className="sidebar-nav">
         <ul>
