@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import Input from './common/Input';
 import Button from './common/Button';
-import '../../styles/global.css';
-import '../../styles/login.css';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
