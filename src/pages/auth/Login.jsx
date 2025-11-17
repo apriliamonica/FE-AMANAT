@@ -46,11 +46,12 @@ const Login = () => {
       <div className='w-full max-w-md'>
         {/* Card Putih */}
         <div className='bg-white rounded-2xl shadow-2xl p-8 sm:p-10'>
-          <img
-            src='public/logoYPTU.png'
-            alt='Logo AMANAT'
-            className='w-full h-full object-contain '
-          />
+          {/* Logo Icon */}
+          <div className='flex justify-center mb-6'>
+            <div className='w-20 h-20 bg-primary-700 rounded-full flex items-center justify-center shadow-lg'>
+              <FileStack className='w-10 h-10 text-white' />
+            </div>
+          </div>
 
           {/* Title */}
           <div className='text-center mb-8'>
@@ -115,16 +116,6 @@ const Login = () => {
           </form>
 
           {/* Demo Login Info */}
-          <div className='mt-6 p-4 bg-gray-50 rounded-lg'>
-            <p className='text-sm font-medium text-gray-700 mb-2'>
-              Demo Login:
-            </p>
-            <div className='space-y-1 text-xs text-gray-600'>
-              <p>• Admin: admin/admin</p>
-              <p>• Pimpinan: pimpinan/pimpinan</p>
-              <p>• Staf: staf/staf</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
