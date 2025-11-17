@@ -8,6 +8,11 @@ import MainLayout from './components/layout/MainLayout';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/dashboard/Dashboard';
 import SuratMasukList from './pages/surat-masuk/SuratMasukList';
+import SuratKeluarList from './pages/surat-keluar/SuratKeluarList';
+import DisposisiList from './pages/disposisi/DisposisiList';
+import ArsipList from './pages/arsip/ArsipList';
+import LaporanPage from './pages/laporan/LaporanPage';
+import PengaturanUser from './pages/pengaturan/PengaturanUser';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -40,48 +45,11 @@ function App() {
             <Route index element={<Navigate to='/dashboard' replace />} />
             <Route path='dashboard' element={<Dashboard />} />
             <Route path='surat-masuk' element={<SuratMasukList />} />
-
-            {/* Placeholder routes */}
-            <Route
-              path='surat-keluar'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Surat Keluar (Coming Soon)
-                </div>
-              }
-            />
-            <Route
-              path='disposisi'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Disposisi (Coming Soon)
-                </div>
-              }
-            />
-            <Route
-              path='arsip'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Arsip (Coming Soon)
-                </div>
-              }
-            />
-            <Route
-              path='laporan'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Laporan (Coming Soon)
-                </div>
-              }
-            />
-            <Route
-              path='pengaturan'
-              element={
-                <div className='p-6 bg-white rounded-lg'>
-                  Halaman Pengaturan (Coming Soon)
-                </div>
-              }
-            />
+            <Route path='surat-keluar' element={<SuratKeluarList />} />
+            <Route path='disposisi' element={<DisposisiList />} />
+            <Route path='arsip' element={<ArsipList />} />
+            <Route path='laporan' element={<LaporanPage />} />
+            <Route path='pengaturan' element={<PengaturanUser />} />
           </Route>
 
           {/* 404 Route */}
@@ -95,4 +63,4 @@ function App() {
   );
 }
 
-export default App;
+export default App();
