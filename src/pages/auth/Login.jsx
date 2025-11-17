@@ -46,12 +46,11 @@ const Login = () => {
       <div className='w-full max-w-md'>
         {/* Card Putih */}
         <div className='bg-white rounded-2xl shadow-2xl p-8 sm:p-10'>
-          {/* Logo Icon */}
-          <div className='flex justify-center mb-6'>
-            <div className='w-20 h-20 bg-primary-700 rounded-full flex items-center justify-center shadow-lg'>
-              <FileStack className='w-10 h-10 text-white' />
-            </div>
-          </div>
+          <img
+            src='public/logoYPTU.png'
+            alt='Logo AMANAT'
+            className='w-full h-full object-contain '
+          />
 
           {/* Title */}
           <div className='text-center mb-8'>

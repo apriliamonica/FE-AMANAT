@@ -92,7 +92,7 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
 
               {/* Jika logo di public/ */}
               <img
-                src='/logoYPTU.png'
+                src='public/logoYPTU.png'
                 alt='Logo AMANAT'
                 className='w-full h-full object-contain'
               />
