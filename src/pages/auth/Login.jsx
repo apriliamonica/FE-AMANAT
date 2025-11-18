@@ -110,6 +110,14 @@ const Login = () => {
           </form>
 
           {/* Demo Login Info */}
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <p className="text-sm font-medium text-gray-700 mb-2">Demo Login:</p>
+            <div className="space-y-1 text-xs text-gray-600">
+              <p>• Admin: admin/admin</p>
+              <p>• Pimpinan: pimpinan/pimpinan</p>
+              <p>• Staf: staf/staf</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
