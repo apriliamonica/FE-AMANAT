@@ -10,16 +10,30 @@ Sistem manajemen surat digital untuk Yayasan Pendidikan Telkom University.
 - 📋 **Sistem Disposisi** - Tracking disposisi surat real-time
 - 📦 **Arsip Digital** - Penyimpanan dan pencarian arsip surat
 - 📊 **Laporan & Analytics** - Dashboard dan laporan visual dengan charts
-- 👥 **Multi-role User Management** - 5 role berbeda dengan akses yang disesuaikan
+- 👥 **Multi-role User Management** - 5 role sistem dengan 7 posisi berbeda (Kepala Bagian memiliki 3 variasi)
 - 🔐 **Authentication & Authorization** - Sistem login yang aman
 
 ## 🎨 Role & Permissions
 
+Sistem ini memiliki **5 role** secara teknis, namun dalam implementasi dunia nyata terdapat **7 posisi** karena Kepala Bagian memiliki 3 variasi bagian yang berbeda:
+
+### 5 Role Sistem:
 1. **Sekretaris Kantor** - Admin utama, akses penuh
 2. **Ketua Pengurus** - Review dan disposisi surat
 3. **Sekretaris Pengurus** - Koordinasi dan follow-up
 4. **Bendahara Pengurus** - Surat terkait keuangan
-5. **Kepala Bagian** (PSDM/Keuangan/Umum) - Eksekusi disposisi
+5. **Kepala Bagian** - Eksekusi disposisi (dengan field `bagian` yang dapat berbeda)
+
+### 7 Posisi di Dunia Nyata:
+1. **Sekretaris Kantor** - Admin utama, akses penuh
+2. **Ketua Pengurus** - Review dan disposisi surat
+3. **Sekretaris Pengurus** - Koordinasi dan follow-up
+4. **Bendahara Pengurus** - Surat terkait keuangan
+5. **Kepala Bagian PSDM** - Eksekusi disposisi untuk bagian PSDM
+6. **Kepala Bagian Keuangan** - Eksekusi disposisi untuk bagian Keuangan
+7. **Kepala Bagian Umum** - Eksekusi disposisi untuk bagian Umum
+
+> **Catatan:** Role "Kepala Bagian" dalam sistem menggunakan field `bagian` untuk membedakan antara PSDM, Keuangan, dan Umum. Setiap Kepala Bagian memiliki akses yang sama namun hanya dapat melihat dan menangani surat yang terkait dengan bagiannya masing-masing.
 
 ## 🛠️ Tech Stack
 
