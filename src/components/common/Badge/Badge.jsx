@@ -1,4 +1,4 @@
-import { cn } from '../../utils/helpers';
+import { cn } from '../../../utils/helpers';
 
 const Badge = ({ children, variant = 'default', className }) => {
   const variants = {

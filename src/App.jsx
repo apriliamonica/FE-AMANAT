@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // Layouts
-import MainLayout from './components/layout/MainLayout';
+import MainLayout from './components/layout/MainLayout/MainLayout';
 
 // Pages
 import Login from './pages/auth/Login';
@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return <Navigate to='/login' replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -31,34 +31,34 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
-          <Route path='/login' element={<Login />} />
+          <Route path="/login" element={<Login />} />
 
           {/* Protected Routes */}
           <Route
-            path='/'
+            path="/"
             element={
               <ProtectedRoute>
                 <MainLayout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to='/dashboard' replace />} />
-            <Route path='dashboard' element={<Dashboard />} />
-            <Route path='surat-masuk' element={<SuratMasukList />} />
-            <Route path='surat-keluar' element={<SuratKeluarList />} />
-            <Route path='disposisi' element={<DisposisiList />} />
-            <Route path='arsip' element={<ArsipList />} />
-            <Route path='laporan' element={<LaporanPage />} />
-            <Route path='pengaturan' element={<PengaturanUser />} />
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="surat-masuk" element={<SuratMasukList />} />
+            <Route path="surat-keluar" element={<SuratKeluarList />} />
+            <Route path="disposisi" element={<DisposisiList />} />
+            <Route path="arsip" element={<ArsipList />} />
+            <Route path="laporan" element={<LaporanPage />} />
+            <Route path="pengaturan" element={<PengaturanUser />} />
           </Route>
 
           {/* 404 Route */}
-          <Route path='*' element={<Navigate to='/dashboard' replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
 
       {/* Toast Notifications */}
-      <Toaster position='top-right' />
+      <Toaster position="top-right" />
     </>
   );
 }
