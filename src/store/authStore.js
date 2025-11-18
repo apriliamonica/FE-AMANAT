@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { authService } from '../services/authService';
+import toast from 'react-hot-toast';
 
 const useAuthStore = create(
   persist(
@@ -19,63 +21,103 @@ const useAuthStore = create(
       login: async (credentials) => {
         set({ isLoading: true, error: null });
         try {
-          // TODO: Replace with actual API call
-          // const response = await authService.login(credentials);
+          // Try API call first
+          try {
+            const response = await authService.login(credentials);
+            const { user: userData, token: authToken } = response.data || response;
 
-          // Simulasi login
-          const mockUser = {
-            id: 1,
-            name: 'Rudi Santoso',
-            email: credentials.username,
-            username: credentials.username,
-            role:
-              credentials.username === 'admin'
-                ? 'sekretaris_kantor'
-                : credentials.username === 'ketua'
-                  ? 'ketua_pengurus'
-                  : credentials.username === 'sekretaris'
-                    ? 'sekretaris_pengurus'
-                    : credentials.username === 'bendahara'
-                      ? 'bendahara_pengurus'
-                      : 'kepala_bagian',
-            role_label:
-              credentials.username === 'admin'
-                ? 'Sekretaris Kantor'
-                : credentials.username === 'ketua'
-                  ? 'Ketua Pengurus Yayasan'
-                  : credentials.username === 'sekretaris'
-                    ? 'Sekretaris Pengurus'
-                    : credentials.username === 'bendahara'
-                      ? 'Bendahara Pengurus'
-                      : 'Kepala Bagian PSDM',
-            bagian: credentials.username.includes('kabag') ? 'PSDM' : null,
-          };
+            set({
+              user: userData,
+              token: authToken,
+              isAuthenticated: true,
+              isLoading: false,
+            });
 
-          const mockToken = 'mock-jwt-token-' + Date.now();
+            // Save to localStorage
+            localStorage.setItem('token', authToken);
+            localStorage.setItem('user', JSON.stringify(userData));
 
-          set({
-            user: mockUser,
-            token: mockToken,
-            isAuthenticated: true,
-            isLoading: false,
-          });
+            toast.success('Login berhasil');
+            return { success: true, user: userData };
+          } catch (apiError) {
+            // Fallback to mock data if API is not available (for development)
+            if (apiError.response?.status >= 400) {
+              throw apiError; // Re-throw real API errors
+            }
 
-          // Save to localStorage
-          localStorage.setItem('token', mockToken);
-          localStorage.setItem('user', JSON.stringify(mockUser));
+            // Mock data for development when API is not available
+            console.warn('API not available, using mock data');
+            const mockUser = {
+              id: 1,
+              name: 'Rudi Santoso',
+              email: credentials.username + '@amanat.com',
+              username: credentials.username,
+              role:
+                credentials.username === 'admin'
+                  ? 'sekretaris_kantor'
+                  : credentials.username === 'ketua'
+                    ? 'ketua_pengurus'
+                    : credentials.username === 'sekretaris'
+                      ? 'sekretaris_pengurus'
+                      : credentials.username === 'bendahara'
+                        ? 'bendahara_pengurus'
+                        : 'kepala_bagian',
+              role_label:
+                credentials.username === 'admin'
+                  ? 'Sekretaris Kantor'
+                  : credentials.username === 'ketua'
+                    ? 'Ketua Pengurus Yayasan'
+                    : credentials.username === 'sekretaris'
+                      ? 'Sekretaris Pengurus'
+                      : credentials.username === 'bendahara'
+                        ? 'Bendahara Pengurus'
+                        : 'Kepala Bagian PSDM',
+              bagian: credentials.username.includes('kabag')
+                ? credentials.username.includes('keuangan')
+                  ? 'keuangan'
+                  : credentials.username.includes('umum')
+                    ? 'umum'
+                    : 'psdm'
+                : null,
+            };
 
-          return { success: true, user: mockUser };
+            const mockToken = 'mock-jwt-token-' + Date.now();
+
+            set({
+              user: mockUser,
+              token: mockToken,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+
+            localStorage.setItem('token', mockToken);
+            localStorage.setItem('user', JSON.stringify(mockUser));
+
+            toast.success('Login berhasil (mock mode)');
+            return { success: true, user: mockUser };
+          }
         } catch (error) {
+          const errorMessage =
+            error.response?.data?.message || error.message || 'Login gagal';
           set({
-            error: error.message,
+            error: errorMessage,
             isLoading: false,
             isAuthenticated: false,
           });
-          return { success: false, error: error.message };
+          toast.error(errorMessage);
+          return { success: false, error: errorMessage };
         }
       },
 
-      logout: () => {
+      logout: async () => {
+        try {
+          // Try to call logout API
+          await authService.logout();
+        } catch (error) {
+          // Ignore API errors on logout
+          console.warn('Logout API error (ignored):', error);
+        }
+
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         set({
@@ -84,6 +126,7 @@ const useAuthStore = create(
           isAuthenticated: false,
           error: null,
         });
+        toast.success('Logout berhasil');
       },
 
       checkAuth: () => {

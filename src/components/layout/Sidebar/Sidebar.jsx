@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn, getInitials } from '../../../utils/helpers';
 
-const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
+const Sidebar = ({ isOpen, onClose, userRole, userName, onLogout }) => {
   const location = useLocation();
 
   // Menu items berdasarkan role
@@ -145,10 +145,15 @@ const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
 
           {/* Logout Button */}
           <button
-            onClick={() => {
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-              window.location.href = '/login';
+            onClick={async () => {
+              if (onLogout) {
+                await onLogout();
+                window.location.href = '/login';
+              } else {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+              }
             }}
             className="w-full flex items-center justify-center space-x-2 px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition-colors"
           >

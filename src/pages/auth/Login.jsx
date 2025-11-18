@@ -1,37 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, FileStack } from 'lucide-react';
+import useAuthStore from '../../store/authStore';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { login, isLoading, isAuthenticated, checkAuth } = useAuthStore();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
   });
 
+  // Check if already authenticated
+  useEffect(() => {
+    if (checkAuth() || isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate, checkAuth]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    // TODO: Implement actual login API call
-    // Simulasi login untuk development
-    setTimeout(() => {
-      // Dummy login berhasil
-      localStorage.setItem('token', 'dummy-token-12345');
-      localStorage.setItem(
-        'user',
-        JSON.stringify({
-          name: 'Rudi Santoso',
-          email: formData.username,
-          role: 'sekretaris_kantor',
-          role_label: 'Administrator',
-        })
-      );
+    const result = await login({
+      username: formData.username,
+      password: formData.password,
+    });
 
-      setLoading(false);
+    if (result.success) {
       navigate('/dashboard');
-    }, 1000);
+    }
   };
 
   const handleChange = (e) => {
@@ -102,20 +99,22 @@ const Login = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="w-full bg-primary-700 text-white py-3 rounded-lg font-medium hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Memproses...' : 'Masuk'}
+              {isLoading ? 'Memproses...' : 'Masuk'}
             </button>
           </form>
 
           {/* Demo Login Info */}
           <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-700 mb-2">Demo Login:</p>
+            <p className="text-sm font-medium text-gray-700 mb-2">Demo Login (Mock Mode):</p>
             <div className="space-y-1 text-xs text-gray-600">
-              <p>• Admin: admin/admin</p>
-              <p>• Pimpinan: pimpinan/pimpinan</p>
-              <p>• Staf: staf/staf</p>
+              <p>• Admin: admin/[password apapun]</p>
+              <p>• Ketua: ketua/[password apapun]</p>
+              <p>• Sekretaris: sekretaris/[password apapun]</p>
+              <p>• Bendahara: bendahara/[password apapun]</p>
+              <p>• Kepala Bagian: kabag_psdm / kabag_keuangan / kabag_umum</p>
             </div>
           </div>
         </div>
