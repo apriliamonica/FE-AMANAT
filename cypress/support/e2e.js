@@ -1,0 +1,44 @@
+import './commands';
+```
+
+---
+
+## 📦 **STEP 11: Update .gitignore**
+```
+# dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+cypress/screenshots
+cypress/videos
+
+# production
+/dist
+/build
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# vite
+.vite
