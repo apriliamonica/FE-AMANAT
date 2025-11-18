@@ -1,4 +1,4 @@
-import apiClient from '../config/axios.config';
+import apiClient from '../api/axios.config';
 import { API_ENDPOINTS } from '../../utils/constants';
 
 export const authService = {

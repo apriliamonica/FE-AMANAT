@@ -1,3 +1,21 @@
+// Status Surat
+export const SURAT_STATUS = {
+  BARU: 'baru',
+  DIPROSES: 'diproses',
+  SELESAI: 'selesai',
+  DITOLAK: 'ditolak',
+  PENDING: 'pending',
+};
+
+// Status Surat Labels
+export const SURAT_STATUS_LABELS = {
+  [SURAT_STATUS.BARU]: 'Baru',
+  [SURAT_STATUS.DIPROSES]: 'Diproses',
+  [SURAT_STATUS.SELESAI]: 'Selesai',
+  [SURAT_STATUS.DITOLAK]: 'Ditolak',
+  [SURAT_STATUS.PENDING]: 'Pending',
+};
+
 // Status Surat Colors (Tailwind)
 export const SURAT_STATUS_COLORS = {
   [SURAT_STATUS.BARU]: 'bg-blue-100 text-blue-800',
@@ -63,6 +81,24 @@ export const BAGIAN_LABELS = {
   [BAGIAN.PSDM]: 'PSDM',
   [BAGIAN.KEUANGAN]: 'Keuangan',
   [BAGIAN.UMUM]: 'Umum',
+};
+
+// User Roles
+export const ROLES = {
+  SEKRETARIS_KANTOR: 'sekretaris_kantor',
+  KETUA_PENGURUS: 'ketua_pengurus',
+  SEKRETARIS_PENGURUS: 'sekretaris_pengurus',
+  BENDAHARA_PENGURUS: 'bendahara_pengurus',
+  KEPALA_BAGIAN: 'kepala_bagian',
+};
+
+// Role Labels
+export const ROLE_LABELS = {
+  [ROLES.SEKRETARIS_KANTOR]: 'Sekretaris Kantor',
+  [ROLES.KETUA_PENGURUS]: 'Ketua Pengurus',
+  [ROLES.SEKRETARIS_PENGURUS]: 'Sekretaris Pengurus',
+  [ROLES.BENDAHARA_PENGURUS]: 'Bendahara Pengurus',
+  [ROLES.KEPALA_BAGIAN]: 'Kepala Bagian',
 };
 
 // Menu Access per Role
