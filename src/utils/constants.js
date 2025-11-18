@@ -84,27 +84,9 @@ export const MENU_ACCESS = {
     'arsip',
     'laporan',
   ],
-  [ROLES.SEKRETARIS_PENGURUS]: [
-    'dashboard',
-    'surat-masuk',
-    'disposisi',
-    'arsip',
-    'laporan',
-  ],
-  [ROLES.BENDAHARA_PENGURUS]: [
-    'dashboard',
-    'surat-masuk',
-    'disposisi',
-    'arsip',
-    'laporan',
-  ],
-  [ROLES.KEPALA_BAGIAN]: [
-    'dashboard',
-    'surat-masuk',
-    'surat-keluar',
-    'arsip',
-    'laporan',
-  ],
+  [ROLES.SEKRETARIS_PENGURUS]: ['dashboard', 'surat-masuk', 'disposisi', 'arsip', 'laporan'],
+  [ROLES.BENDAHARA_PENGURUS]: ['dashboard', 'surat-masuk', 'disposisi', 'arsip', 'laporan'],
+  [ROLES.KEPALA_BAGIAN]: ['dashboard', 'surat-masuk', 'surat-keluar', 'arsip', 'laporan'],
 };
 
 // API Endpoints

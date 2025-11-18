@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  FileText,
-  Download,
-  TrendingUp,
-  TrendingDown,
-  Mail,
-  Send,
-  BarChart3,
-} from 'lucide-react';
+import { FileText, Download, TrendingUp, TrendingDown, Mail, Send, BarChart3 } from 'lucide-react';
 import Button from '../../components/common/Button';
 import {
   BarChart,
@@ -92,28 +84,22 @@ const LaporanPage = () => {
   return (
     <div>
       {/* Page Header */}
-      <div className='mb-6'>
-        <h1 className='text-2xl font-bold text-gray-900'>Laporan</h1>
-        <p className='text-gray-600 mt-1'>
-          Lihat rekap dan analisis surat masuk dan keluar
-        </p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Laporan</h1>
+        <p className="text-gray-600 mt-1">Lihat rekap dan analisis surat masuk dan keluar</p>
       </div>
 
       {/* Filter Section */}
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6'>
-        <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-          Filter Laporan
-        </h2>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Filter Laporan</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Jenis Laporan */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
-              Jenis Laporan
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Jenis Laporan</label>
             <select
               value={jenisLaporan}
               onChange={(e) => setJenisLaporan(e.target.value)}
-              className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option>Bulanan</option>
               <option>Triwulan</option>
@@ -124,36 +110,32 @@ const LaporanPage = () => {
 
           {/* Tanggal Mulai */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
-              Tanggal Mulai
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
             <input
-              type='date'
+              type="date"
               value={tanggalMulai}
               onChange={(e) => setTanggalMulai(e.target.value)}
-              className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
 
           {/* Tanggal Akhir */}
           <div>
-            <label className='block text-sm font-medium text-gray-700 mb-2'>
-              Tanggal Akhir
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tanggal Akhir</label>
             <input
-              type='date'
+              type="date"
               value={tanggalAkhir}
               onChange={(e) => setTanggalAkhir(e.target.value)}
-              className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className='flex items-end gap-2'>
-            <Button variant='outline' icon={Download} className='flex-1'>
+          <div className="flex items-end gap-2">
+            <Button variant="outline" icon={Download} className="flex-1">
               PDF
             </Button>
-            <Button variant='primary' icon={Download} className='flex-1'>
+            <Button variant="primary" icon={Download} className="flex-1">
               Excel
             </Button>
           </div>
@@ -161,28 +143,23 @@ const LaporanPage = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat) => {
           const Icon = stat.icon;
           const TrendIcon = stat.trend === 'up' ? TrendingUp : TrendingDown;
 
           return (
-            <div
-              key={stat.id}
-              className='bg-white rounded-lg shadow-sm border border-gray-200 p-5'
-            >
-              <div className='flex items-start justify-between mb-3'>
-                <div className='flex-1'>
-                  <p className='text-sm text-gray-600 mb-1'>{stat.title}</p>
-                  <p className='text-3xl font-bold text-gray-900'>
-                    {stat.value}
-                  </p>
+            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 mb-1">{stat.title}</p>
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
                 </div>
                 <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className='w-6 h-6 text-white' />
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
               </div>
-              <div className='flex items-center text-sm'>
+              <div className="flex items-center text-sm">
                 {stat.trend && (
                   <TrendIcon
                     className={`w-4 h-4 mr-1 ${
@@ -208,43 +185,37 @@ const LaporanPage = () => {
       </div>
 
       {/* Charts */}
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Trend Surat Bulanan */}
-        <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Tren Surat Bulanan
-          </h2>
-          <ResponsiveContainer width='100%' height={300}>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Tren Surat Bulanan</h2>
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={trendData}>
-              <CartesianGrid strokeDasharray='3 3' />
-              <XAxis dataKey='bulan' />
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="bulan" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey='suratMasuk' fill='#3b82f6' name='Surat Masuk' />
-              <Bar dataKey='suratKeluar' fill='#8bc34a' name='Surat Keluar' />
+              <Bar dataKey="suratMasuk" fill="#3b82f6" name="Surat Masuk" />
+              <Bar dataKey="suratKeluar" fill="#8bc34a" name="Surat Keluar" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Distribusi Kategori */}
-        <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Distribusi Kategori Surat
-          </h2>
-          <ResponsiveContainer width='100%' height={300}>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Distribusi Kategori Surat</h2>
+          <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
                 data={kategoriData}
-                cx='50%'
-                cy='50%'
+                cx="50%"
+                cy="50%"
                 labelLine={false}
-                label={({ name, percent }) =>
-                  `${name}: ${(percent * 100).toFixed(0)}%`
-                }
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                 outerRadius={100}
-                fill='#8884d8'
-                dataKey='value'
+                fill="#8884d8"
+                dataKey="value"
               >
                 {kategoriData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
@@ -257,34 +228,25 @@ const LaporanPage = () => {
       </div>
 
       {/* Ringkasan Kategori */}
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-6'>
-        <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-          Ringkasan Kategori
-        </h2>
-        <div className='space-y-3'>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Ringkasan Kategori</h2>
+        <div className="space-y-3">
           {kategoriData.map((item, index) => {
-            const total = kategoriData.reduce(
-              (sum, item) => sum + item.value,
-              0
-            );
+            const total = kategoriData.reduce((sum, item) => sum + item.value, 0);
             const percentage = ((item.value / total) * 100).toFixed(1);
 
             return (
-              <div key={index} className='flex items-center'>
-                <div className='flex items-center flex-1'>
+              <div key={index} className="flex items-center">
+                <div className="flex items-center flex-1">
                   <div
-                    className='w-3 h-3 rounded-full mr-3'
+                    className="w-3 h-3 rounded-full mr-3"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className='text-sm text-gray-700'>{item.name}</span>
+                  <span className="text-sm text-gray-700">{item.name}</span>
                 </div>
-                <div className='flex items-center gap-4'>
-                  <span className='text-sm font-medium text-gray-900'>
-                    {item.value} surat
-                  </span>
-                  <span className='text-sm text-gray-500 w-12 text-right'>
-                    {percentage}%
-                  </span>
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-900">{item.value} surat</span>
+                  <span className="text-sm text-gray-500 w-12 text-right">{percentage}%</span>
                 </div>
               </div>
             );
