@@ -1,5 +1,5 @@
 import apiClient from '../api/axios.config';
-import { API_ENDPOINTS } from '../../utils/constants';
+import { API_ENDPOINTS } from '../utils/constants';
 
 export const suratService = {
   // Surat Masuk
