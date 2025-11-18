@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
+import { suratService } from '../services/suratService';
 
 const useSuratStore = create((set, get) => ({
   // State
@@ -13,101 +14,163 @@ const useSuratStore = create((set, get) => ({
   fetchSuratMasuk: async () => {
     set({ isLoading: true });
     try {
-      // TODO: Replace with actual API call
-      // const response = await suratService.getSuratMasuk();
+      try {
+        const response = await suratService.getSuratMasuk();
+        const data = response.data || response;
+        set({ suratMasuk: Array.isArray(data) ? data : data.items || [], isLoading: false });
+        return Array.isArray(data) ? data : data.items || [];
+      } catch (apiError) {
+        // Fallback to mock data if API is not available
+        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
+          throw apiError; // Re-throw real API errors
+        }
 
-      // Mock data
-      const mockData = [
-        {
-          id: 1,
-          nomorSurat: '001/SM/V/2025',
-          asalSurat: 'Dinas Pendidikan',
-          tanggal: '2025-10-10',
-          perihal: 'Undangan Rapat Koordinasi Pendidikan',
-          prioritas: 'urgent',
-          status: 'baru',
-          kategori: 'undangan',
-          file: null,
-        },
-        {
-          id: 2,
-          nomorSurat: '002/SM/V/2025',
-          asalSurat: 'Kementerian Keuangan',
-          tanggal: '2025-10-09',
-          perihal: 'Permohonan Data Keuangan',
-          prioritas: 'tinggi',
-          status: 'diproses',
-          kategori: 'permohonan',
-          file: null,
-        },
-      ];
+        console.warn('API not available, using mock data');
+        const mockData = [
+          {
+            id: 1,
+            nomorSurat: '001/SM/V/2025',
+            asalSurat: 'Dinas Pendidikan',
+            tanggal: '2025-10-10',
+            tanggalTerima: '2025-10-10',
+            perihal: 'Undangan Rapat Koordinasi Pendidikan',
+            prioritas: 'urgent',
+            status: 'baru',
+            kategori: 'undangan',
+            file: null,
+          },
+          {
+            id: 2,
+            nomorSurat: '002/SM/V/2025',
+            asalSurat: 'Kementerian Keuangan',
+            tanggal: '2025-10-09',
+            tanggalTerima: '2025-10-09',
+            perihal: 'Permohonan Data Keuangan',
+            prioritas: 'tinggi',
+            status: 'diproses',
+            kategori: 'permohonan',
+            file: null,
+          },
+        ];
 
-      set({ suratMasuk: mockData, isLoading: false });
-      return mockData;
+        set({ suratMasuk: mockData, isLoading: false });
+        return mockData;
+      }
     } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal memuat surat masuk');
+      const errorMessage = error.response?.data?.message || error.message || 'Gagal memuat surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      throw error;
     }
   },
 
   createSuratMasuk: async (data) => {
     set({ isLoading: true });
     try {
-      // TODO: Replace with actual API call
-      const newSurat = {
-        id: Date.now(),
-        ...data,
-        status: 'baru',
-        tanggal: data.tanggalTerima,
-      };
+      try {
+        const response = await suratService.createSuratMasuk(data);
+        const newSurat = response.data || response;
+        set((state) => ({
+          suratMasuk: [newSurat, ...state.suratMasuk],
+          isLoading: false,
+        }));
+        toast.success('Surat masuk berhasil ditambahkan');
+        return { success: true, data: newSurat };
+      } catch (apiError) {
+        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
+          throw apiError;
+        }
 
-      set((state) => ({
-        suratMasuk: [newSurat, ...state.suratMasuk],
-        isLoading: false,
-      }));
+        // Fallback to mock
+        const newSurat = {
+          id: Date.now(),
+          ...data,
+          status: 'baru',
+          tanggal: data.tanggalTerima || data.tanggal,
+        };
 
-      toast.success('Surat masuk berhasil ditambahkan');
-      return { success: true, data: newSurat };
+        set((state) => ({
+          suratMasuk: [newSurat, ...state.suratMasuk],
+          isLoading: false,
+        }));
+
+        toast.success('Surat masuk berhasil ditambahkan (mock mode)');
+        return { success: true, data: newSurat };
+      }
     } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal menambahkan surat masuk');
-      return { success: false, error: error.message };
+      const errorMessage = error.response?.data?.message || error.message || 'Gagal menambahkan surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
   },
 
   updateSuratMasuk: async (id, data) => {
     set({ isLoading: true });
     try {
-      set((state) => ({
-        suratMasuk: state.suratMasuk.map((surat) =>
-          surat.id === id ? { ...surat, ...data } : surat
-        ),
-        isLoading: false,
-      }));
+      try {
+        const response = await suratService.updateSuratMasuk(id, data);
+        const updatedSurat = response.data || response;
+        set((state) => ({
+          suratMasuk: state.suratMasuk.map((surat) =>
+            surat.id === id ? updatedSurat : surat
+          ),
+          isLoading: false,
+        }));
+        toast.success('Surat masuk berhasil diupdate');
+        return { success: true, data: updatedSurat };
+      } catch (apiError) {
+        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
+          throw apiError;
+        }
 
-      toast.success('Surat masuk berhasil diupdate');
-      return { success: true };
+        // Fallback to mock
+        set((state) => ({
+          suratMasuk: state.suratMasuk.map((surat) =>
+            surat.id === id ? { ...surat, ...data } : surat
+          ),
+          isLoading: false,
+        }));
+        toast.success('Surat masuk berhasil diupdate (mock mode)');
+        return { success: true };
+      }
     } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal mengupdate surat masuk');
-      return { success: false };
+      const errorMessage = error.response?.data?.message || error.message || 'Gagal mengupdate surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
   },
 
   deleteSuratMasuk: async (id) => {
     set({ isLoading: true });
     try {
-      set((state) => ({
-        suratMasuk: state.suratMasuk.filter((surat) => surat.id !== id),
-        isLoading: false,
-      }));
+      try {
+        await suratService.deleteSuratMasuk(id);
+        set((state) => ({
+          suratMasuk: state.suratMasuk.filter((surat) => surat.id !== id),
+          isLoading: false,
+        }));
+        toast.success('Surat masuk berhasil dihapus');
+        return { success: true };
+      } catch (apiError) {
+        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
+          throw apiError;
+        }
 
-      toast.success('Surat masuk berhasil dihapus');
-      return { success: true };
+        // Fallback to mock
+        set((state) => ({
+          suratMasuk: state.suratMasuk.filter((surat) => surat.id !== id),
+          isLoading: false,
+        }));
+        toast.success('Surat masuk berhasil dihapus (mock mode)');
+        return { success: true };
+      }
     } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal menghapus surat masuk');
-      return { success: false };
+      const errorMessage = error.response?.data?.message || error.message || 'Gagal menghapus surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
     }
   },
 

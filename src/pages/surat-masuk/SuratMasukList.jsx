@@ -1,12 +1,29 @@
-import { useState } from 'react';
-import { Search, Filter, Plus, Eye, Edit2, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Plus, Eye, Edit2, Trash2, X } from 'lucide-react';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
+import useSuratStore from '../../store/suratStore';
+import { formatDate } from '../../utils/helpers';
+import { PRIORITAS_LABELS, JENIS_SURAT_LABELS, SURAT_STATUS_LABELS } from '../../utils/constants';
 
 const SuratMasukList = () => {
+  const {
+    suratMasuk,
+    isLoading,
+    fetchSuratMasuk,
+    createSuratMasuk,
+    updateSuratMasuk,
+    deleteSuratMasuk,
+    searchSuratMasuk,
+  } = useSuratStore();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [selectedSurat, setSelectedSurat] = useState(null);
   const [formData, setFormData] = useState({
     nomorSurat: '',
     tanggalTerima: '',
@@ -17,61 +34,17 @@ const SuratMasukList = () => {
     file: null,
   });
 
-  // Dummy data surat masuk
-  const suratMasukData = [
-    {
-      id: 1,
-      nomorSurat: '001/SM/V/2025',
-      asalSurat: 'Dinas Pendidikan',
-      tanggal: '10/10/2025',
-      perihal: 'Undangan Rapat Koordinasi Pendidikan',
-      prioritas: 'urgent',
-      status: 'baru',
-    },
-    {
-      id: 2,
-      nomorSurat: '002/SM/V/2025',
-      asalSurat: 'Kementerian Keuangan',
-      tanggal: '9/10/2025',
-      perihal: 'Permohonan Data Keuangan',
-      prioritas: 'tinggi',
-      status: 'diproses',
-    },
-    {
-      id: 3,
-      nomorSurat: '003/SM/V/2025',
-      asalSurat: 'BKN Regional',
-      tanggal: '8/10/2025',
-      perihal: 'Verifikasi Data Kepegawaian',
-      prioritas: 'sedang',
-      status: 'diproses',
-    },
-    {
-      id: 4,
-      nomorSurat: '004/SM/V/2025',
-      asalSurat: 'LKPP',
-      tanggal: '7/10/2025',
-      perihal: 'Pemberitahuan Lelang Pengadaan',
-      prioritas: 'rendah',
-      status: 'selesai',
-    },
-    {
-      id: 5,
-      nomorSurat: '005/SM/V/2025',
-      asalSurat: 'Inspektorat Daerah',
-      tanggal: '6/10/2025',
-      perihal: 'Audit Internal Semester I',
-      prioritas: 'urgent',
-      status: 'selesai',
-    },
-  ];
+  // Fetch data on mount
+  useEffect(() => {
+    fetchSuratMasuk();
+  }, [fetchSuratMasuk]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // TODO: Implement API call
-    setShowModal(false);
-    // Reset form
+  // Filter data based on search
+  const filteredData = searchQuery
+    ? searchSuratMasuk(searchQuery)
+    : suratMasuk;
+
+  const resetForm = () => {
     setFormData({
       nomorSurat: '',
       tanggalTerima: '',
@@ -81,6 +54,69 @@ const SuratMasukList = () => {
       prioritas: '',
       file: null,
     });
+    setEditingId(null);
+  };
+
+  const handleOpenAdd = () => {
+    resetForm();
+    setShowModal(true);
+  };
+
+  const handleOpenEdit = (surat) => {
+    setFormData({
+      nomorSurat: surat.nomorSurat || '',
+      tanggalTerima: surat.tanggalTerima || surat.tanggal || '',
+      asalSurat: surat.asalSurat || '',
+      perihal: surat.perihal || '',
+      kategori: surat.kategori || '',
+      prioritas: surat.prioritas || '',
+      file: null,
+    });
+    setEditingId(surat.id);
+    setShowModal(true);
+  };
+
+  const handleOpenView = (surat) => {
+    setSelectedSurat(surat);
+    setShowViewModal(true);
+  };
+
+  const handleOpenDelete = (surat) => {
+    setSelectedSurat(surat);
+    setShowDeleteModal(true);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const submitData = {
+      ...formData,
+      tanggalTerima: formData.tanggalTerima,
+    };
+
+    let result;
+    if (editingId) {
+      result = await updateSuratMasuk(editingId, submitData);
+    } else {
+      result = await createSuratMasuk(submitData);
+    }
+
+    if (result.success) {
+      setShowModal(false);
+      resetForm();
+      fetchSuratMasuk(); // Refresh data
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedSurat) {
+      const result = await deleteSuratMasuk(selectedSurat.id);
+      if (result.success) {
+        setShowDeleteModal(false);
+        setSelectedSurat(null);
+        fetchSuratMasuk(); // Refresh data
+      }
+    }
   };
 
   const handleChange = (e) => {
@@ -123,7 +159,7 @@ const SuratMasukList = () => {
             <Button
               variant="primary"
               icon={Plus}
-              onClick={() => setShowModal(true)}
+              onClick={handleOpenAdd}
               className="flex-1 sm:flex-none"
             >
               Tambah Surat Masuk
@@ -134,95 +170,109 @@ const SuratMasukList = () => {
 
       {/* Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nomor Surat
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Asal Surat
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tanggal
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Perihal
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Prioritas
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Aksi
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {suratMasukData.map((surat) => (
-                <tr key={surat.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {surat.nomorSurat}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {surat.asalSurat}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {surat.tanggal}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={surat.prioritas}>
-                      {surat.prioritas.charAt(0).toUpperCase() + surat.prioritas.slice(1)}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={surat.status}>
-                      {surat.status.charAt(0).toUpperCase() + surat.status.slice(1)}
-                    </Badge>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <div className="flex items-center gap-2">
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Lihat"
-                      >
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      </button>
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4 text-gray-600" />
-                      </button>
-                      <button
-                        className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Hapus"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </button>
-                    </div>
-                  </td>
+        {isLoading ? (
+          <div className="p-8 text-center text-gray-500">Memuat data...</div>
+        ) : filteredData.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">Tidak ada data surat masuk</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Nomor Surat
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Asal Surat
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tanggal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Perihal
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Prioritas
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Aksi
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredData.map((surat) => (
+                  <tr key={surat.id} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {surat.nomorSurat}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {surat.asalSurat}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {formatDate(surat.tanggal || surat.tanggalTerima, 'dd/MM/yyyy')}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant={surat.prioritas}>
+                        {PRIORITAS_LABELS[surat.prioritas] || surat.prioritas}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Badge variant={surat.status}>
+                        {SURAT_STATUS_LABELS[surat.status] || surat.status}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleOpenView(surat)}
+                          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                          title="Lihat"
+                        >
+                          <Eye className="w-4 h-4 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => handleOpenEdit(surat)}
+                          className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4 text-gray-600" />
+                        </button>
+                        <button
+                          onClick={() => handleOpenDelete(surat)}
+                          className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Hapus"
+                        >
+                          <Trash2 className="w-4 h-4 text-red-600" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
-      {/* Modal Tambah Surat Masuk */}
+      {/* Modal Tambah/Edit Surat Masuk */}
       <Modal
         isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title="Tambah Surat Masuk Baru"
+        onClose={() => {
+          setShowModal(false);
+          resetForm();
+        }}
+        title={editingId ? 'Edit Surat Masuk' : 'Tambah Surat Masuk Baru'}
         size="lg"
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <p className="text-sm text-gray-600 mb-4">
-            Isi formulir di bawah untuk menambahkan surat masuk baru
+            {editingId
+              ? 'Edit data surat masuk di bawah'
+              : 'Isi formulir di bawah untuk menambahkan surat masuk baru'}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -308,6 +358,8 @@ const SuratMasukList = () => {
                 <option value="permohonan">Permohonan</option>
                 <option value="pemberitahuan">Pemberitahuan</option>
                 <option value="laporan">Laporan</option>
+                <option value="surat_tugas">Surat Tugas</option>
+                <option value="lainnya">Lainnya</option>
               </select>
             </div>
 
@@ -343,26 +395,118 @@ const SuratMasukList = () => {
               onChange={handleFileChange}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Pastikan semua data telah diisi dengan benar sebelum menyimpan.
-            </p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button type="button" variant="outline" onClick={() => setShowModal(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowModal(false);
+                resetForm();
+              }}
+            >
               Batal
             </Button>
-            <Button type="submit" variant="primary">
-              Simpan
+            <Button type="submit" variant="primary" disabled={isLoading}>
+              {isLoading ? 'Menyimpan...' : editingId ? 'Update' : 'Simpan'}
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal View Surat Masuk */}
+      <Modal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false);
+          setSelectedSurat(null);
+        }}
+        title="Detail Surat Masuk"
+        size="lg"
+      >
+        {selectedSurat && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Surat</label>
+                <p className="text-sm text-gray-900">{selectedSurat.nomorSurat}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Terima</label>
+                <p className="text-sm text-gray-900">
+                  {formatDate(selectedSurat.tanggal || selectedSurat.tanggalTerima)}
+                </p>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Asal Surat</label>
+                <p className="text-sm text-gray-900">{selectedSurat.asalSurat}</p>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+                <p className="text-sm text-gray-900">{selectedSurat.perihal}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                <p className="text-sm text-gray-900">
+                  {JENIS_SURAT_LABELS[selectedSurat.kategori] || selectedSurat.kategori}
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Prioritas</label>
+                <Badge variant={selectedSurat.prioritas}>
+                  {PRIORITAS_LABELS[selectedSurat.prioritas] || selectedSurat.prioritas}
+                </Badge>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <Badge variant={selectedSurat.status}>
+                  {SURAT_STATUS_LABELS[selectedSurat.status] || selectedSurat.status}
+                </Badge>
+              </div>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Modal Delete Confirmation */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setSelectedSurat(null);
+        }}
+        title="Konfirmasi Hapus"
+        size="md"
+      >
+        {selectedSurat && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Apakah Anda yakin ingin menghapus surat masuk{' '}
+              <span className="font-semibold">{selectedSurat.nomorSurat}</span>?
+            </p>
+            <p className="text-xs text-gray-500">Tindakan ini tidak dapat dibatalkan.</p>
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setSelectedSurat(null);
+                }}
+              >
+                Batal
+              </Button>
+              <Button type="button" variant="danger" onClick={handleDelete} disabled={isLoading}>
+                {isLoading ? 'Menghapus...' : 'Hapus'}
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );
 };
 
 export default SuratMasukList;
-
-// Lokasi: src/pages/surat-masuk/SuratMasukList.jsx
