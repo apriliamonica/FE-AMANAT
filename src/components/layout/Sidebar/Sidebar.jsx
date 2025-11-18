@@ -11,13 +11,6 @@ import {
 } from 'lucide-react';
 import { cn, getInitials } from '../../../utils/helpers';
 
-// Import logo (pilih salah satu cara)
-// CARA 1: Jika logo di public/
-// const logoPath = '/logoYPTU.png';
-
-// CARA 2: Jika logo di src/assets/images/
-// import logoYPTU from '../../assets/images/logoYPTU.png';
-
 const Sidebar = ({ isOpen, onClose, userRole, userName }) => {
   const location = useLocation();
 
