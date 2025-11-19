@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Eye, Download, Mail, Send, Archive } from 'lucide-react';
-import Badge from '../../components/common/Badge/Badge';
+import Badge from '../../components/common/Badge';
+import toast from 'react-hot-toast';
 
 const ArsipList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [jenisFilter, setJenisFilter] = useState('Semua Jenis');
   const [kategoriFilter, setKategoriFilter] = useState('Semua Kategori');
+  const [filteredData, setFilteredData] = useState([]);
 
   // Dummy data arsip
   const arsipData = [
@@ -53,7 +55,7 @@ const ArsipList = () => {
       id: 5,
       nomorSurat: '004/SM/V/2025',
       jenis: 'Surat Masuk',
-      judul: 'Sosialisasi Pengisian Burung dan Jasa',
+      judul: 'Sosialisasi Pengisian Barang dan Jasa',
       dari: 'LKPP',
       tanggalSurat: '7/10/2025',
       tanggalArsip: '9/10/2025',
@@ -61,30 +63,71 @@ const ArsipList = () => {
     },
   ];
 
-  // Stats
+  // Filter logic
+  useEffect(() => {
+    let result = arsipData;
+
+    // Filter by search query
+    if (searchQuery) {
+      result = result.filter(
+        (item) =>
+          item.nomorSurat.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.judul.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.dari.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Filter by jenis
+    if (jenisFilter !== 'Semua Jenis') {
+      result = result.filter((item) => item.jenis === jenisFilter);
+    }
+
+    // Filter by kategori
+    if (kategoriFilter !== 'Semua Kategori') {
+      result = result.filter((item) => item.kategori === kategoriFilter);
+    }
+
+    setFilteredData(result);
+  }, [searchQuery, jenisFilter, kategoriFilter]);
+
+  // Stats calculation
+  const totalArsip = filteredData.length;
+  const suratMasuk = filteredData.filter((item) => item.jenis === 'Surat Masuk').length;
+  const suratKeluar = filteredData.filter((item) => item.jenis === 'Surat Keluar').length;
+
   const stats = [
     {
       id: 1,
       title: 'Total Arsip',
-      value: '5',
+      value: totalArsip.toString(),
       icon: Archive,
       bgColor: 'bg-blue-500',
     },
     {
       id: 2,
       title: 'Surat Masuk',
-      value: '3',
+      value: suratMasuk.toString(),
       icon: Mail,
       bgColor: 'bg-green-500',
     },
     {
       id: 3,
       title: 'Surat Keluar',
-      value: '2',
+      value: suratKeluar.toString(),
       icon: Send,
       bgColor: 'bg-purple-500',
     },
   ];
+
+  const handleDownload = (arsip) => {
+    toast.success(`Mengunduh: ${arsip.nomorSurat}`);
+    // TODO: Implement actual download
+  };
+
+  const handleView = (arsip) => {
+    toast.info('Fitur detail akan segera hadir');
+    // TODO: Implement view detail
+  };
 
   return (
     <div>
@@ -140,7 +183,10 @@ const ArsipList = () => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+            <div
+              key={stat.id}
+              className="bg-white rounded-lg shadow-sm border border-gray-200 p-5"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
@@ -198,8 +244,12 @@ const ArsipList = () => {
                       {arsip.jenis}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{arsip.judul}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{arsip.dari}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {arsip.judul}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {arsip.dari}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {arsip.tanggalSurat}
                   </td>
@@ -211,16 +261,10 @@ const ArsipList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Lihat"
-                      >
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Download"
-                      >
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Download">
                         <Download className="w-4 h-4 text-gray-600" />
                       </button>
                     </div>
