@@ -1,13 +1,60 @@
-import { useState } from 'react';
-import { Search, Filter, Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Eye, CheckCircle } from 'lucide-react';
 import Button from '../../components/common/Button';
+import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
+import useDisposisiStore from '../../store/disposisiStore';
+import TrackingModal from '../../components/Features/TrackingModal';
+import toast from 'react-hot-toast';
 
 const DisposisiList = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showTrackingModal, setShowTrackingModal] = useState(false);
+  const [selectedDisposisi, setSelectedDisposisi] = useState(null);
+  const [catatan, setCatatan] = useState('');
+
+  const { 
+    disposisiList, 
+    isLoading,
+    fetchDisposisi,
+    updateDisposisiStatus 
+  } = useDisposisiStore();
+
+  useEffect(() => {
+    fetchDisposisi();
+  }, [fetchDisposisi]);
+
+  const openUpdate = (disposisi) => {
+    setSelectedDisposisi(disposisi);
+    setCatatan('');
+    setShowUpdateModal(true);
+  };
+
+  const openTracking = (disposisi) => {
+    setSelectedDisposisi(disposisi);
+    setShowTrackingModal(true);
+  };
+
+  const handleUpdateStatus = async (status) => {
+    if (selectedDisposisi) {
+      const result = await updateDisposisiStatus(
+        selectedDisposisi.id, 
+        status, 
+        catatan
+      );
+      
+      if (result.success) {
+        setShowUpdateModal(false);
+        setSelectedDisposisi(null);
+        setCatatan('');
+        fetchDisposisi();
+      }
+    }
+  };
 
   // Dummy data disposisi
-  const disposisiData = [
+  const disposisiData = disposisiList.length > 0 ? disposisiList : [
     {
       id: 1,
       nomorSurat: '001/SM/V/2025',
@@ -111,25 +158,21 @@ const DisposisiList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {disposisi.kepada}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{disposisi.perihal}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {disposisi.perihal}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {disposisi.tenggatWaktu}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={disposisi.status}>
-                      {disposisi.status === 'selesai'
-                        ? 'Selesai'
-                        : disposisi.status === 'menunggu'
-                          ? 'Menunggu Dibalas'
-                          : 'Dalam Proses'}
+                      {disposisi.status === 'selesai' ? 'Selesai' :
+                       disposisi.status === 'menunggu' ? 'Menunggu Dibalas' : 'Dalam Proses'}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Lihat"
-                      >
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                       <button className="px-3 py-1 text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded transition-colors">

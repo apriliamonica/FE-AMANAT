@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Eye, Send, Trash2 } from 'lucide-react';
 import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal';
-import Badge from '../../components/common/Badge';
+import Modal from '../../components/common/Modal/Modal';
+import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import toast from 'react-hot-toast';
 
