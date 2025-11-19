@@ -106,7 +106,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
             <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
+                  <p className="text-sm text-gray-600 mb-2 **font-bold**">{stat.title}</p>
                   <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
                 </div>
                 <div className={`${stat.bgColor} p-3 rounded-full`}>
