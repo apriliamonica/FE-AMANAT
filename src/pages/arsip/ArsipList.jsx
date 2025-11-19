@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Eye, Download, Mail, Send, Archive } from 'lucide-react';
-import Badge from '../../components/common/Badge';
+import Badge from '../../components/common/Badge/Badge';
 import toast from 'react-hot-toast';
 
 const ArsipList = () => {
