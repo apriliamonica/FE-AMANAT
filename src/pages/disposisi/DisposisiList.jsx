@@ -4,7 +4,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
 import useDisposisiStore from '../../store/disposisiStore';
-import TrackingModal from '../../components/Features/TrackingModal';
+import TrackingModal from "../../components/Features/TrackingModal.jsx";
 import toast from 'react-hot-toast';
 
 const DisposisiList = () => {
