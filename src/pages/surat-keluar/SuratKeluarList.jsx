@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import { Search, Filter, Plus, Eye, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Search, Filter, Plus, Eye, Send, Trash2 } from 'lucide-react';
 import Button from '../../components/common/Button';
-import Modal from '../../components/common/Modal/Modal';
-import Badge from '../../components/common/Badge/Badge';
+import Modal from '../../components/common/Modal';
+import Badge from '../../components/common/Badge';
+import useSuratStore from '../../store/suratStore';
+import toast from 'react-hot-toast';
 
 const SuratKeluarList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedSuratId, setSelectedSuratId] = useState(null);
   const [formData, setFormData] = useState({
     nomorSurat: '',
     tanggalSurat: '',
@@ -18,8 +22,26 @@ const SuratKeluarList = () => {
     lampiran: null,
   });
 
-  // Dummy data surat keluar
-  const suratKeluarData = [
+  const { 
+    suratKeluar, 
+    isLoading,
+    fetchSuratKeluar, 
+    createSuratKeluar, 
+    sendSuratKeluar,
+    deleteSuratKeluar,
+    searchSuratKeluar 
+  } = useSuratStore();
+
+  useEffect(() => {
+    fetchSuratKeluar();
+  }, [fetchSuratKeluar]);
+
+  // Filter data based on search
+  const filteredData = searchQuery 
+    ? searchSuratKeluar(searchQuery)
+    : suratKeluar;
+
+  const suratKeluarData = filteredData || [
     {
       id: 1,
       nomorSurat: '001/SK/V/2025',
@@ -78,12 +100,12 @@ const SuratKeluarList = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const { name } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: e.target.files[0] }));
+    setFormData(prev => ({ ...prev, [name]: e.target.files[0] }));
   };
 
   return (
@@ -114,8 +136,8 @@ const SuratKeluarList = () => {
             <Button variant="outline" icon={Filter} className="flex-1 sm:flex-none">
               Filter
             </Button>
-            <Button
-              variant="primary"
+            <Button 
+              variant="primary" 
               icon={Plus}
               onClick={() => setShowModal(true)}
               className="flex-1 sm:flex-none"
@@ -167,32 +189,25 @@ const SuratKeluarList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {surat.tanggal}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {surat.perihal}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {surat.kategori}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={surat.status}>
-                      {surat.status === 'kirim'
-                        ? 'Terkirim'
-                        : surat.status === 'menunggu'
-                          ? 'Menunggu TTD'
-                          : 'Draft'}
+                      {surat.status === 'kirim' ? 'Terkirim' : 
+                       surat.status === 'menunggu' ? 'Menunggu TTD' : 'Draft'}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button
-                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                        title="Lihat"
-                      >
+                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                       {surat.status === 'draft' && (
-                        <button
-                          className="p-1.5 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Kirim"
-                        >
+                        <button className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim">
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
                       )}
@@ -348,14 +363,17 @@ const SuratKeluarList = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Surat akan disimpan sebagai draft dan memerlukan tanda tangan digital dari pimpinan
-              sebelum dikirim.
+              Surat akan disimpan sebagai draft dan memerlukan tanda tangan digital dari pimpinan sebelum dikirim.
             </p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button type="button" variant="outline" onClick={() => setShowModal(false)}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowModal(false)}
+            >
               Batal
             </Button>
             <Button type="submit" variant="primary">
