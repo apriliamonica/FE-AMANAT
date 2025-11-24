@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '../common/Modal/Modal';
-import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive } from 'lucide-react';
-import useDisposisiStore from '../../store/disposisiStore';
-import { formatDateTime } from '../../utils/helpers';
+import Modal from '../common/Modal/Modal'; // Asumsi komponen Modal tersedia
+import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive, AlertCircle } from 'lucide-react';
+import useDisposisiStore from '../../store/disposisiStore'; // Asumsi store ini ada
+import { formatDateTime } from '../../utils/helpers'; // Asumsi helper ini ada
 
-// --- Komponen Tab Content ---
-
-// 1. DETAIL TAB
+// --- 1. DETAIL TAB ---
 const DetailTab = ({ surat }) => (
   <div className="p-4 bg-white rounded-xl border border-green-500/20 shadow-sm">
     <h4 className="font-semibold text-green-600 mb-4">Informasi Surat</h4>
@@ -65,12 +63,11 @@ const DetailTab = ({ surat }) => (
   </div>
 );
 
-// 2. TRACKING TAB (Menggunakan logika dari kode sebelumnya)
+// --- 2. TRACKING TAB ---
 const TrackingTab = ({ surat }) => {
   const { trackingHistory, fetchTrackingHistory, isLoading } = useDisposisiStore();
 
   useEffect(() => {
-    // Hanya fetch jika surat tersedia
     if (surat && surat.nomorSurat) {
       fetchTrackingHistory(surat.nomorSurat);
     }
@@ -132,7 +129,7 @@ const TrackingTab = ({ surat }) => {
   );
 };
 
-// 3. DISPOSISI TAB (Mock-up)
+// --- 3. DISPOSISI TAB (Mock-up) ---
 const DisposisiTab = ({ surat }) => (
   <div className="pt-2">
     <h4 className="font-semibold text-gray-900 mb-4">Disposisi & Tindak Lanjut</h4>
@@ -144,16 +141,14 @@ const DisposisiTab = ({ surat }) => (
 );
 
 
-// --- Komponen Modal Utama ---
+// --- Komponen Modal Utama: MailDetailModal ---
 const MailDetailModal = ({ isOpen, onClose, surat }) => {
-  const [activeTab, setActiveTab] = useState('Detail'); // Default tab
+  const [activeTab, setActiveTab] = useState('Detail'); 
 
-  // Daftar Tab
   const tabs = [
     { name: 'Detail', component: DetailTab },
     { name: 'Tracking', component: TrackingTab },
     { name: 'Disposisi', component: DisposisiTab },
-    // Tambahkan tab Lampiran jika diperlukan
   ];
 
   const ActiveComponent = tabs.find(t => t.name === activeTab)?.component || DetailTab;
@@ -165,11 +160,11 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
       isOpen={isOpen}
       onClose={onClose}
       title={surat.perihal || 'Detail Surat'}
-      size="3xl" // Ukuran Modal diperbesar agar konten tab nyaman
+      size="xl" // Ukuran Modal sudah disetel menjadi ramping
     >
       <div className="space-y-4">
         
-        {/* Header Status (Mirip Desain Gambar) */}
+        {/* Header Status */}
         <div className="flex justify-between items-center pb-2 border-b border-gray-100">
           <div>
             <p className="text-sm text-gray-500 font-medium">
