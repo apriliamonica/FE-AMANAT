@@ -133,17 +133,7 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Login Info */}
-          <div className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
-            <p className="text-sm font-medium mb-2 text-gray-800">Demo Login (Mock Mode):</p>
-            <div className="space-y-1 text-xs text-gray-600">
-              <p>• Admin: admin/[password apapun]</p>
-              <p>• Ketua: ketua/[password apapun]</p>
-              <p>• Sekretaris: sekretaris/[password apapun]</p>
-              <p>• Bendahara: bendahara/[password apapun]</p>
-              <p>• Kepala Bagian: kabag_psdm / kabag_keuangan / kabag_umum</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
