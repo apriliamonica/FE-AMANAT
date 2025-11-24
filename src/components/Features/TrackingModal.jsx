@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Modal from '../common/Modal/Modal'; // Asumsi komponen Modal tersedia
-import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive, AlertCircle } from 'lucide-react';
-import useDisposisiStore from '../../store/disposisiStore'; // Asumsi store ini ada
-import { formatDateTime } from '../../utils/helpers'; // Asumsi helper ini ada
+import Modal from '../common/Modal/Modal';
+import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive, AlertCircle, Paperclip } from 'lucide-react';
+import useDisposisiStore from '../../store/disposisiStore';
+import { formatDateTime } from '../../utils/helpers';
 
 // --- 1. DETAIL TAB ---
 const DetailTab = ({ surat }) => (
-  <div className="p-4 bg-white rounded-xl border border-green-500/20 shadow-sm">
+  // Diberi tinggi minimum agar konsisten dengan tab lain
+  <div className="p-4 bg-white rounded-xl border border-green-500/20 shadow-sm min-h-[350px]"> 
     <h4 className="font-semibold text-green-600 mb-4">Informasi Surat</h4>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
       
@@ -89,16 +90,17 @@ const TrackingTab = ({ surat }) => {
       <h4 className="font-semibold text-gray-900 mb-4">Riwayat Perjalanan Surat</h4>
       
       {isLoading ? (
-        <div className="flex items-center justify-center py-8">
+        <div className="flex items-center justify-center py-8 min-h-[350px]">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
         </div>
       ) : trackingHistory && trackingHistory.length > 0 ? (
         <div className="relative pl-4">
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200"></div>
           
-          <div className="space-y-6">
-            {trackingHistory.map((item, index) => (
-              <div key={index} className="relative flex items-start">
+          {/* Riwayat Dibalik: Data Terbaru di Atas */}
+          <div className="space-y-6 min-h-[350px]"> 
+            {[...trackingHistory].reverse().map((item, index) => ( 
+              <div key={item.id || index} className="relative flex items-start">
                 
                 <div className="relative z-10 flex items-center justify-center w-6 h-6 bg-white border-4 border-white rounded-full translate-x-[-15px] shadow-sm">
                   {getStatusIcon(item.status)}
@@ -120,8 +122,8 @@ const TrackingTab = ({ surat }) => {
           </div>
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg">
-          <Archive className="w-8 h-8 mx-auto mb-3 text-gray-400" />
+        <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg min-h-[350px] flex flex-col justify-center items-center">
+          <AlertCircle className="w-8 h-8 mx-auto mb-3 text-gray-400" />
           <p>Belum ada riwayat tracking untuk surat ini</p>
         </div>
       )}
@@ -131,13 +133,24 @@ const TrackingTab = ({ surat }) => {
 
 // --- 3. DISPOSISI TAB (Mock-up) ---
 const DisposisiTab = ({ surat }) => (
-  <div className="pt-2">
+  <div className="pt-2 min-h-[350px]"> {/* Diberi tinggi minimum */}
     <h4 className="font-semibold text-gray-900 mb-4">Disposisi & Tindak Lanjut</h4>
-    <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg">
+    <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg h-full flex flex-col justify-center items-center">
         <Clock className="w-8 h-8 mx-auto mb-3 text-gray-400" />
         <p>Konten Form Disposisi atau Riwayat Disposisi akan ditempatkan di sini.</p>
     </div>
   </div>
+);
+
+// --- 4. LAMPIRAN TAB (Mock-up) ---
+const LampiranTab = ({ surat }) => (
+    <div className="pt-2 min-h-[350px]"> {/* Diberi tinggi minimum */}
+      <h4 className="font-semibold text-gray-900 mb-4">Daftar Lampiran</h4>
+      <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg h-full flex flex-col justify-center items-center">
+          <Paperclip className="w-8 h-8 mx-auto mb-3 text-gray-400" />
+          <p>Daftar file lampiran surat akan ditampilkan di sini.</p>
+      </div>
+    </div>
 );
 
 
@@ -149,6 +162,7 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
     { name: 'Detail', component: DetailTab },
     { name: 'Tracking', component: TrackingTab },
     { name: 'Disposisi', component: DisposisiTab },
+    { name: 'Lampiran', component: LampiranTab },
   ];
 
   const ActiveComponent = tabs.find(t => t.name === activeTab)?.component || DetailTab;
@@ -160,12 +174,12 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
       isOpen={isOpen}
       onClose={onClose}
       title={surat.perihal || 'Detail Surat'}
-      size="xl" // Ukuran Modal sudah disetel menjadi ramping
+      size="xl" // Lebar Modal konsisten di ukuran XL
     >
-      <div className="space-y-4">
+      <div className="space-y-4 flex flex-col h-full">
         
         {/* Header Status */}
-        <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+        <div className="flex justify-between items-center pb-2 border-b border-gray-100 flex-shrink-0">
           <div>
             <p className="text-sm text-gray-500 font-medium">
               {surat.nomorSurat} 
@@ -182,7 +196,7 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 flex-shrink-0">
           {tabs.map((tab) => (
             <button
               key={tab.name}
@@ -200,13 +214,13 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
           ))}
         </div>
 
-        {/* Tab Content */}
-        <div className="py-4">
+        {/* Tab Content Area (Tinggi Konsisten + Scroll) */}
+        <div className="py-4 flex-grow overflow-y-auto max-h-[400px]"> 
           <ActiveComponent surat={surat} />
         </div>
 
         {/* Close Button */}
-        <div className="flex justify-end pt-4 border-t border-gray-100">
+        <div className="flex justify-end pt-4 border-t border-gray-100 flex-shrink-0">
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
