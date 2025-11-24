@@ -20,12 +20,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const result = await login({
       username: formData.username,
       password: formData.password,
     });
-
     if (result.success) {
       navigate('/dashboard');
     }
@@ -39,31 +37,52 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 flex items-center justify-center p-4">
+    // Background Gradien Sesuai Tema Sidebar
+    <div className="min-h-screen bg-gradient-to-br from-primary-800 to-secondary-600 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Card Putih */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
+        
+        {/* Card Login Glassmorphism (Teks Gelap) */}
+        <div className="
+          bg-white/90                   /* Meningkatkan opacity background card agar teks hitam lebih kontras */
+          backdrop-blur-lg             
+          rounded-2xl                   
+          p-10 sm:p-12 
+          shadow-xl 
+          shadow-black/20              
+          border border-white/50        
+          text-gray-900                 /* PERUBAHAN UTAMA: Warna teks default diubah menjadi gelap */
+          transition-all duration-300
+        ">
+          
           {/* Logo Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 bg-primary-700 rounded-full flex items-center justify-center shadow-lg">
-              <FileStack className="w-10 h-10 text-white" />
+          <div className="flex justify-center mb-4"> 
+            <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full p-2 shadow-lg"> 
+             <img 
+                src="/LogoYPTU.png" 
+                alt="Logo AMANAT" 
+                className="max-h-full max-w-full object-contain"
+             />
             </div>
           </div>
 
           {/* Title */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">AMANAT</h1>
-            <p className="text-gray-600 text-sm">Aplikasi Manajemen Surat dan Arsip Terpadu</p>
+            {/* Judul utama menggunakan warna gelap untuk kontras */}
+            <h1 className="text-5xl font-extrabold mb-1 tracking-wider text-gray-900">AMANAT</h1> 
+            <p className="text-gray-600 text-base">Aplikasi Manajemen Surat YPTU</p> {/* Subtitle menggunakan abu-abu gelap */}
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            
             {/* Username Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+              {/* Label diubah menjadi abu-abu gelap */}
+              <label className="block text-sm font-medium mb-1 text-gray-700">Username</label> 
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="w-5 h-5 text-gray-400" />
+                  {/* Icon dipertahankan abu-abu gelap */}
+                  <User className="w-5 h-5 text-gray-500" /> 
                 </div>
                 <input
                   type="text"
@@ -72,17 +91,20 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="Masukkan username"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                  // Teks input tetap abu-abu gelap/hitam
+                  className="w-full pl-10 pr-4 py-3.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition duration-300 text-gray-900 placeholder-gray-500" 
                 />
               </div>
             </div>
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              {/* Label diubah menjadi abu-abu gelap */}
+              <label className="block text-sm font-medium mb-1 text-gray-700">Password</label> 
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-gray-400" />
+                  {/* Icon dipertahankan abu-abu gelap */}
+                  <Lock className="w-5 h-5 text-gray-500" /> 
                 </div>
                 <input
                   type="password"
@@ -91,24 +113,24 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="Masukkan password"
                   required
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition"
+                  className="w-full pl-10 pr-4 py-3.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition duration-300 text-gray-900 placeholder-gray-500"
                 />
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button (Tidak ada perubahan karena sudah solid) */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-primary-700 text-white py-3 rounded-lg font-medium hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary-700 text-white py-3.5 mt-6 rounded-lg font-semibold hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-white transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Memproses...' : 'Masuk'}
             </button>
           </form>
 
-          {/* Demo Login Info */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <p className="text-sm font-medium text-gray-700 mb-2">Demo Login (Mock Mode):</p>
+          {/* Demo Login Info (Disetel untuk Teks Gelap) */}
+          <div className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
+            <p className="text-sm font-medium mb-2 text-gray-800">Demo Login (Mock Mode):</p>
             <div className="space-y-1 text-xs text-gray-600">
               <p>• Admin: admin/[password apapun]</p>
               <p>• Ketua: ketua/[password apapun]</p>
@@ -124,5 +146,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// Lokasi: src/pages/auth/Login.jsx
