@@ -1,3 +1,5 @@
+// src/pages/auth/Login.jsx
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Lock, FileStack } from 'lucide-react';
@@ -43,20 +45,20 @@ const Login = () => {
         
         {/* Card Login Glassmorphism (Teks Gelap) */}
         <div className="
-          bg-white/90                   /* Meningkatkan opacity background card agar teks hitam lebih kontras */
+          bg-white/90                   /* Opacity tinggi agar teks hitam kontras */
           backdrop-blur-lg             
           rounded-2xl                   
           p-10 sm:p-12 
           shadow-xl 
           shadow-black/20              
           border border-white/50        
-          text-gray-900                 /* PERUBAHAN UTAMA: Warna teks default diubah menjadi gelap */
+          text-gray-900                 
           transition-all duration-300
         ">
           
-          {/* Logo Icon */}
+          {/* Logo Icon (W-24 H-24) */}
           <div className="flex justify-center mb-4"> 
-            <div className="w-24 h-24 flex items-center justify-center bg-white rounded-full p-2 shadow-lg"> 
+            <div className="w-24 h-24 flex items-center justify-center rounded-full p-2 "> 
              <img 
                 src="/LogoYPTU.png" 
                 alt="Logo AMANAT" 
@@ -65,11 +67,19 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Title */}
+          {/* Title (Blok Warna dan Sub-judul Tetap) */}
           <div className="text-center mb-8">
-            {/* Judul utama menggunakan warna gelap untuk kontras */}
-            <h1 className="text-5xl font-extrabold mb-1 tracking-wider text-gray-900">AMANAT</h1> 
-            <p className="text-gray-600 text-base">Aplikasi Manajemen Surat YPTU</p> {/* Subtitle menggunakan abu-abu gelap */}
+            <h1 className="text-5xl font-extrabold mb-1 tracking-wider">
+              {/* Blok 1: AMAN (Hijau Sekunder) */}
+              <span className="text-secondary-600">AMAN</span>
+              {/* Blok 2: AT (Kuning Amber) */}
+              <span className="text-amber-500">AT</span>
+            </h1> 
+
+            {/* Subtitle: Tetap seperti sebelumnya (A, M, S, T aksen warna primary-700) */}
+            <p className="text-base text-gray-600">
+              <span className="font-semibold text-primary-700">A</span><span className="text-gray-600">p</span><span className="text-gray-600">l</span><span className="text-gray-600">i</span><span className="text-gray-600">k</span><span className="text-gray-600">a</span><span className="text-gray-600">s</span><span className="text-gray-600">i</span> <span className="font-semibold text-primary-700">M</span><span className="text-gray-600">a</span><span className="text-gray-600">n</span><span className="text-gray-600">a</span><span className="text-gray-600">j</span><span className="text-gray-600">e</span><span className="text-gray-600">m</span><span className="text-gray-600">e</span><span className="text-gray-600">n</span> <span className="font-semibold text-primary-700">S</span><span className="text-gray-600">u</span><span className="text-gray-600">r</span><span className="text-gray-600">a</span><span className="font-semibold text-primary-700">t</span> 
+            </p>
           </div>
 
           {/* Form */}
@@ -77,11 +87,9 @@ const Login = () => {
             
             {/* Username Input */}
             <div>
-              {/* Label diubah menjadi abu-abu gelap */}
               <label className="block text-sm font-medium mb-1 text-gray-700">Username</label> 
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {/* Icon dipertahankan abu-abu gelap */}
                   <User className="w-5 h-5 text-gray-500" /> 
                 </div>
                 <input
@@ -91,7 +99,6 @@ const Login = () => {
                   onChange={handleChange}
                   placeholder="Masukkan username"
                   required
-                  // Teks input tetap abu-abu gelap/hitam
                   className="w-full pl-10 pr-4 py-3.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition duration-300 text-gray-900 placeholder-gray-500" 
                 />
               </div>
@@ -99,11 +106,9 @@ const Login = () => {
 
             {/* Password Input */}
             <div>
-              {/* Label diubah menjadi abu-abu gelap */}
               <label className="block text-sm font-medium mb-1 text-gray-700">Password</label> 
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  {/* Icon dipertahankan abu-abu gelap */}
                   <Lock className="w-5 h-5 text-gray-500" /> 
                 </div>
                 <input
@@ -118,7 +123,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Submit Button (Tidak ada perubahan karena sudah solid) */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -128,7 +133,7 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Login Info (Disetel untuk Teks Gelap) */}
+          {/* Demo Login Info */}
           <div className="mt-6 p-4 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
             <p className="text-sm font-medium mb-2 text-gray-800">Demo Login (Mock Mode):</p>
             <div className="space-y-1 text-xs text-gray-600">
