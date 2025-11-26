@@ -6,6 +6,7 @@ import Badge from '../../components/common/Badge/Badge';
 import useDisposisiStore from '../../store/disposisiStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
 import toast from 'react-hot-toast';
+import useAuthStore from '../../store/authStore';
 
 const DisposisiList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,6 +22,8 @@ const DisposisiList = () => {
     updateDisposisiStatus 
   } = useDisposisiStore();
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
     fetchDisposisi();
   }, [fetchDisposisi]);
@@ -34,6 +37,30 @@ const DisposisiList = () => {
   const openTracking = (disposisi) => {
     setSelectedDisposisi(disposisi);
     setShowTrackingModal(true);
+  };
+
+  const [filterType, setFilterType] = useState('all'); // all | masuk | keluar
+
+  const applyFilter = (list) => {
+    if (!user) return list;
+    const uname = (user.name || user.username || '').toString().toLowerCase();
+    const urole = (user.role_label || user.role || '').toString().toLowerCase();
+
+    if (filterType === 'masuk') {
+      return list.filter(d => {
+        const kepada = (d.kepada || '').toString().toLowerCase();
+        return kepada.includes(uname) || kepada.includes(urole) || (user.bagian && kepada.includes(user.bagian));
+      });
+    }
+
+    if (filterType === 'keluar') {
+      return list.filter(d => {
+        const dari = (d.dari || '').toString().toLowerCase();
+        return dari.includes(uname) || dari.includes(urole);
+      });
+    }
+
+    return list;
   };
 
   const handleUpdateStatus = async (status) => {
@@ -53,8 +80,8 @@ const DisposisiList = () => {
     }
   };
 
-  // Dummy data disposisi
-  const disposisiData = disposisiList.length > 0 ? disposisiList : [
+  // Data disposisi (mock fallback)
+  const sourceList = disposisiList.length > 0 ? disposisiList : [
     {
       id: 1,
       nomorSurat: '001/SM/V/2025',
@@ -87,6 +114,8 @@ const DisposisiList = () => {
     },
   ];
 
+  const disposisiData = applyFilter(sourceList);
+
   return (
     <div>
       {/* Page Header */}
@@ -94,6 +123,38 @@ const DisposisiList = () => {
         <h1 className="text-2xl font-bold text-gray-900">Disposisi Surat</h1>
         <p className="text-gray-600 mt-1">Pantau dan kelola disposisi surat</p>
       </div>
+
+      {/* Update Status Modal */}
+      <Modal
+        isOpen={showUpdateModal}
+        onClose={() => { setShowUpdateModal(false); setSelectedDisposisi(null); }}
+        title={selectedDisposisi ? `Update Disposisi ${selectedDisposisi.nomorSurat}` : 'Update Disposisi'}
+        size="md"
+      >
+        {selectedDisposisi && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">Instruksi: <span className="font-medium">{selectedDisposisi.instruksi || selectedDisposisi.perihal}</span></p>
+            <div>
+              <label className="block text-sm text-gray-700 mb-1">Catatan / Tanggapan</label>
+              <textarea value={catatan} onChange={(e) => setCatatan(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+            </div>
+            <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
+              <Button variant="outline" onClick={() => { setShowUpdateModal(false); setSelectedDisposisi(null); }}>Batal</Button>
+              <Button variant="primary" onClick={() => handleUpdateStatus('diproses')}>Tandai Diproses</Button>
+              <Button variant="success" onClick={() => handleUpdateStatus('selesai')}>Tandai Selesai</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Tracking Modal */}
+      {showTrackingModal && selectedDisposisi && (
+        <TrackingModal
+          isOpen={showTrackingModal}
+          onClose={() => { setShowTrackingModal(false); setSelectedDisposisi(null); }}
+          surat={{ nomorSurat: selectedDisposisi.nomorSurat, perihal: selectedDisposisi.perihal, asalSurat: selectedDisposisi.dari }}
+        />
+      )}
 
       {/* Search & Filter */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
@@ -111,9 +172,34 @@ const DisposisiList = () => {
           </div>
 
           {/* Filter Button */}
-          <Button variant="outline" icon={Filter}>
-            Filter
-          </Button>
+          <div className="flex items-center gap-2">
+            <div className="inline-flex rounded-md shadow-sm" role="group">
+              <button
+                type="button"
+                onClick={() => setFilterType('all')}
+                className={`px-3 py-1 text-sm font-medium ${filterType === 'all' ? 'bg-green-600 text-white' : 'bg-white text-gray-700 border border-gray-200'}`}
+              >
+                Semua
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType('masuk')}
+                className={`px-3 py-1 text-sm font-medium ${filterType === 'masuk' ? 'bg-green-600 text-white' : 'bg-white text-gray-700 border border-gray-200'}`}
+              >
+                Masuk
+              </button>
+              <button
+                type="button"
+                onClick={() => setFilterType('keluar')}
+                className={`px-3 py-1 text-sm font-medium ${filterType === 'keluar' ? 'bg-green-600 text-white' : 'bg-white text-gray-700 border border-gray-200'}`}
+              >
+                Keluar
+              </button>
+            </div>
+            <Button variant="outline" icon={Filter}>
+              Filter
+            </Button>
+          </div>
         </div>
       </div>
 

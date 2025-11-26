@@ -39,6 +39,17 @@ const SuratKeluarList = () => {
     fetchSuratKeluar();
   }, [fetchSuratKeluar]);
 
+  const handleSend = async (surat) => {
+    if (!surat || !surat.id) return;
+    const result = await sendSuratKeluar(surat.id);
+    if (result && result.success) {
+      toast.success('Surat berhasil dikirim');
+      fetchSuratKeluar();
+    } else {
+      toast.error('Gagal mengirim surat');
+    }
+  };
+
   // Filter data based on search
   let filteredData = searchQuery 
     ? searchSuratKeluar(searchQuery)
@@ -218,7 +229,7 @@ const SuratKeluarList = () => {
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                       {surat.status === 'draft' && (
-                        <button className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim">
+                        <button onClick={() => handleSend(surat)} className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim">
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
                       )}
