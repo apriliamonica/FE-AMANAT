@@ -12,6 +12,8 @@ const SuratKeluarList = () => {
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [selectedSuratId, setSelectedSuratId] = useState(null);
+  const [selectedSurat, setSelectedSurat] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [formData, setFormData] = useState({
     nomorSurat: '',
     tanggalSurat: '',
@@ -91,22 +93,47 @@ const SuratKeluarList = () => {
     },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // TODO: Implement API call
-    setShowModal(false);
-    // Reset form
-    setFormData({
-      nomorSurat: '',
-      tanggalSurat: '',
-      tujuanSurat: '',
-      perihal: '',
-      isiSurat: '',
-      kategori: '',
-      fileSurat: null,
-      lampiran: null,
-    });
+
+    try {
+      const result = await createSuratKeluar(formData);
+      if (result && result.success) {
+        toast.success('Surat keluar tersimpan');
+        setShowModal(false);
+        // Reset form
+        setFormData({
+          nomorSurat: '',
+          tanggalSurat: '',
+          tujuanSurat: '',
+          perihal: '',
+          isiSurat: '',
+          kategori: '',
+          fileSurat: null,
+          lampiran: null,
+        });
+        fetchSuratKeluar();
+      }
+    } catch (err) {
+      toast.error('Gagal menyimpan surat keluar');
+    }
+  };
+
+  const handleOpenView = (surat) => {
+    setSelectedSurat(surat);
+    setShowViewModal(true);
+  };
+
+  const handleSend = async (id) => {
+    try {
+      const res = await sendSuratKeluar(id);
+      if (res && res.success) {
+        toast.success('Surat berhasil dikirim');
+        fetchSuratKeluar();
+      }
+    } catch (err) {
+      toast.error('Gagal mengirim surat');
+    }
   };
 
   const handleChange = (e) => {
@@ -214,11 +241,11 @@ const SuratKeluarList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
+                      <button onClick={() => handleOpenView(surat)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                       {surat.status === 'draft' && (
-                        <button className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim">
+                        <button onClick={() => handleSend(surat.id)} className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim" disabled={isLoading}>
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
                       )}
@@ -392,6 +419,43 @@ const SuratKeluarList = () => {
             </Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal View Surat Keluar */}
+      <Modal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false);
+          setSelectedSurat(null);
+        }}
+        title="Detail Surat Keluar"
+        size="md"
+      >
+        {selectedSurat && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Surat</label>
+              <p className="text-sm text-gray-900">{selectedSurat.nomorSurat}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+              <p className="text-sm text-gray-900">{selectedSurat.tanggal || selectedSurat.tanggalSurat}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tujuan</label>
+              <p className="text-sm text-gray-900">{selectedSurat.tujuan || selectedSurat.tujuanSurat}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
+              <p className="text-sm text-gray-900">{selectedSurat.perihal}</p>
+            </div>
+            <div className="flex justify-end pt-4 border-t border-gray-200">
+              <Button type="button" variant="outline" onClick={() => { setShowViewModal(false); setSelectedSurat(null); }}>
+                Tutup
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

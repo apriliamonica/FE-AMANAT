@@ -252,6 +252,39 @@ const useSuratStore = create((set, get) => ({
     }
   },
 
+  deleteSuratKeluar: async (id) => {
+    set({ isLoading: true });
+    try {
+      try {
+        await suratService.deleteSuratKeluar(id);
+        set((state) => ({
+          suratKeluar: state.suratKeluar.filter((surat) => surat.id !== id),
+          isLoading: false,
+        }));
+
+        toast.success('Surat keluar berhasil dihapus');
+        return { success: true };
+      } catch (apiError) {
+        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
+          throw apiError;
+        }
+
+        // Fallback to mock
+        set((state) => ({
+          suratKeluar: state.suratKeluar.filter((surat) => surat.id !== id),
+          isLoading: false,
+        }));
+        toast.success('Surat keluar berhasil dihapus (mock mode)');
+        return { success: true };
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Gagal menghapus surat keluar';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
   // Common Actions
   setSelectedSurat: (surat) => set({ selectedSurat: surat }),
 
