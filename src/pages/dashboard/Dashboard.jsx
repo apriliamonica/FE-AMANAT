@@ -204,10 +204,10 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
 // Dashboard Ketua Pengurus
 const DashboardKetuaPengurus = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '6', icon: Mail, bgColor: 'bg-blue-500' },
-    { id: 2, title: 'Disposisi Selesai', value: '24', icon: Archive, bgColor: 'bg-green-500' },
-    { id: 3, title: 'Menunggu Review', value: '6', icon: Clock, bgColor: 'bg-orange-500' },
-    { id: 4, title: 'Total Bulan Ini', value: '30', icon: Send, bgColor: 'bg-purple-500' },
+    { id: 1, title: 'Disposisi Masuk', value: '6', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
+    { id: 2, title: 'Disposisi Selesai', value: '24', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
+    { id: 3, title: 'Menunggu Review', value: '6', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
+    { id: 4, title: 'Total Bulan Ini', value: '30', icon: Send, bgColor: 'bg-purple-500', path: '/arsip' },
   ];
 
   const menungguTindakan = [
@@ -243,17 +243,19 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className="w-6 h-6 text-white" />
+            <Link key={stat.id} to={stat.path} className="block" aria-label={`Buka ${stat.title}`}>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2 font-bold">{stat.title}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-full`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -307,10 +309,10 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
 // Dashboard Sekretaris & Bendahara Pengurus
 const DashboardSekretarisBendahara = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '5', icon: Mail, bgColor: 'bg-blue-500' },
-    { id: 2, title: 'Menunggu Tidak Lanjut', value: '3', icon: Clock, bgColor: 'bg-orange-500' },
-    { id: 3, title: 'Selesai Bulan Ini', value: '28', icon: Archive, bgColor: 'bg-green-500' },
-    { id: 4, title: 'Perlu Review', value: '2', icon: Send, bgColor: 'bg-purple-500' },
+    { id: 1, title: 'Disposisi Masuk', value: '5', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
+    { id: 2, title: 'Menunggu Tidak Lanjut', value: '3', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
+    { id: 3, title: 'Selesai Bulan Ini', value: '28', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
+    { id: 4, title: 'Perlu Review', value: '2', icon: Send, bgColor: 'bg-purple-500', path: '/disposisi' },
   ];
 
   const disposisiKetua = [
@@ -336,17 +338,19 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className="w-6 h-6 text-white" />
+            <Link key={stat.id} to={stat.path} className="block" aria-label={`Buka ${stat.title}`}>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2 font-bold">{stat.title}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-full`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
@@ -395,10 +399,10 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
 // Dashboard Kepala Bagian
 const DashboardKepalaBagian = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '4', icon: Mail, bgColor: 'bg-blue-500' },
-    { id: 2, title: 'Lampiran Pending', value: '2', icon: Clock, bgColor: 'bg-orange-500' },
-    { id: 3, title: 'Selesai Bulan Ini', value: '22', icon: Archive, bgColor: 'bg-green-500' },
-    { id: 4, title: 'Dalam Proses', value: '2', icon: Send, bgColor: 'bg-purple-500' },
+    { id: 1, title: 'Disposisi Masuk', value: '4', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
+    { id: 2, title: 'Lampiran Pending', value: '2', icon: Clock, bgColor: 'bg-orange-500', path: '/surat-masuk' },
+    { id: 3, title: 'Selesai Bulan Ini', value: '22', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
+    { id: 4, title: 'Dalam Proses', value: '2', icon: Send, bgColor: 'bg-purple-500', path: '/surat-keluar' },
   ];
 
   const disposisiPSDM = [
@@ -425,17 +429,19 @@ const DashboardKepalaBagian = ({ openTracking }) => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className="w-6 h-6 text-white" />
+            <Link key={stat.id} to={stat.path} className="block" aria-label={`Buka ${stat.title}`}>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2 font-bold">{stat.title}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-full`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
