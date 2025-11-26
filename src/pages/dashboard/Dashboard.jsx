@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Mail, Send, Clock, Archive } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
 
@@ -146,12 +145,12 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       <p className="text-sm text-gray-600">Posisi Saat Ini: {item.posisi}</p>
                     </div>
                   </div>
-                  <Link
-                    to="/surat-masuk?today=1"
+                  <button
+                    onClick={() => openTracking(item)}
                     className="ml-4 px-4 py-2 bg-primary-700 text-white text-sm rounded-lg hover:bg-primary-800 transition-colors"
                   >
                     Lihat Tracking
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -183,42 +182,18 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       <p className="text-sm text-gray-600">Posisi Saat Ini: {item.posisi}</p>
                     </div>
                   </div>
-                  <Link
-                    to="/surat-masuk?today=1"
+                  <button
+                    onClick={() => openTracking(item)}
                     className="ml-4 px-4 py-2 bg-primary-700 text-white text-sm rounded-lg hover:bg-primary-800 transition-colors"
                   >
                     Lihat Tracking
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
-        {/* Surat Masuk & Surat Keluar quick view */}
-        <div className="space-y-6 mt-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Surat Masuk</h2>
-            <div className="text-sm text-gray-600">Daftar surat masuk relevan dengan tugas Anda akan muncul di sini.</div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Surat Keluar</h2>
-            <div className="text-sm text-gray-600">Daftar surat keluar dan lampiran terkait akan muncul di sini.</div>
-          </div>
-        </div>
-          {/* Surat Masuk & Disposisi Sections */}
-          <div className="space-y-6 mt-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Surat Masuk Bagian</h2>
-              <div className="text-sm text-gray-600">Surat masuk yang dialokasikan ke bagian Anda akan ditampilkan di sini.</div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Disposisi Masuk/Keluar</h2>
-              <div className="text-sm text-gray-600">Pisahkan disposisi masuk dan disposisi keluar—klik untuk melihat detail dan upload lampiran.</div>
-            </div>
-          </div>
     </div>
   );
 };
@@ -322,43 +297,9 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
           ))}
         </div>
       </div>
-      
-      {/* Surat Masuk & Surat Keluar Sections (separate cards like Sekretaris) */}
-      <div className="space-y-6 mt-6">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Surat Masuk</h2>
-          <div className="space-y-3">
-            {menungguTindakan.filter(i => i.badges && i.badges.includes('Surat Masuk')).map(item => (
-              <div key={item.id} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium">{item.date} • {item.title}</p>
-                  <p className="text-sm text-gray-600">Dari: {item.from || '—'}</p>
-                </div>
-                <button onClick={() => openTracking(item)} className="px-3 py-1 bg-primary-700 text-white rounded">Lihat</button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Surat Keluar</h2>
-          <div className="space-y-3">
-            {menungguTindakan.filter(i => i.badges && i.badges.includes('Surat Keluar')).map(item => (
-              <div key={item.id} className="p-3 bg-gray-50 rounded-lg flex justify-between items-center">
-                <div>
-                  <p className="text-sm font-medium">{item.date} • {item.title}</p>
-                  <p className="text-sm text-gray-600">Kepada: {item.to || '—'}</p>
-                </div>
-                <button onClick={() => openTracking(item)} className="px-3 py-1 bg-primary-700 text-white rounded">Lihat</button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
-
 
 // Dashboard Sekretaris & Bendahara Pengurus
 const DashboardSekretarisBendahara = ({ openTracking }) => {
