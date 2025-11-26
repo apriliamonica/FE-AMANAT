@@ -4,6 +4,7 @@ import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive, AlertCircl
 import useDisposisiStore from '../../store/disposisiStore';
 import useAuthStore from '../../store/authStore';
 import useSuratStore from '../../store/suratStore';
+import lampiranService from '../../services/lampiranService';
 import toast from 'react-hot-toast';
 import { formatDateTime } from '../../utils/helpers';
 
@@ -214,6 +215,20 @@ const LampiranTab = ({ surat }) => {
       const res = await createSuratKeluar(newSurat);
 
       if (res.success) {
+        const created = res.data;
+
+        // If files present, try upload to backend lampiran endpoint
+        if (files && files.length > 0) {
+          try {
+            // prefer created.id, fallback to createdId (mock)
+            const createdId = created.id || createdId;
+            await lampiranService.uploadSuratKeluar(createdId, files, { keterangan: `Lampiran untuk ${detectedNomor}` });
+          } catch (uploadErr) {
+            console.warn('Upload lampiran gagal, continuing (mock fallback):', uploadErr.message || uploadErr);
+            // continue; we still proceed with disposisi creation
+          }
+        }
+
         // Update original disposisi (if surat has disposisiId)
         if (surat.disposisiId) {
           await updateDisposisiStatus(surat.disposisiId, 'selesai', `Lampiran ${nomorGenerated} dibuat oleh ${user.role_label || user.name}`);

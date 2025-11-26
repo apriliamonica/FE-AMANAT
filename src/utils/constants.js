@@ -160,6 +160,13 @@ export const API_ENDPOINTS = {
   LAPORAN: {
     GENERATE: '/laporan/generate',
   },
+  LAMPIRAN: {
+    UPLOAD_SURAT_MASUK: (suratMasukId) => `/lampiran/surat-masuk/${suratMasukId}/upload`,
+    UPLOAD_SURAT_KELUAR: (suratKeluarId) => `/lampiran/surat-keluar/${suratKeluarId}/upload`,
+    LIST_SURAT_MASUK: (suratMasukId) => `/lampiran/surat-masuk/${suratMasukId}`,
+    LIST_SURAT_KELUAR: (suratKeluarId) => `/lampiran/surat-keluar/${suratKeluarId}`,
+    DOWNLOAD: (id) => `/lampiran/${id}/download`,
+  },
   USERS: {
     LIST: '/users',
     DETAIL: (id) => `/users/${id}`,
