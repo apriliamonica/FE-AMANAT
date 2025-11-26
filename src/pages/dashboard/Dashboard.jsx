@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Mail, Send, Clock, Archive } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
@@ -50,10 +51,10 @@ const Dashboard = () => {
 // Dashboard Sekretaris Kantor
 const DashboardSekretarisKantor = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Surat Masuk Baru', value: '18', icon: Mail, bgColor: 'bg-blue-500' },
-    { id: 2, title: 'Surat Keluar Draft', value: '12', icon: Send, bgColor: 'bg-green-500' },
-    { id: 3, title: 'Menunggu Disposisi', value: '8', icon: Clock, bgColor: 'bg-orange-500' },
-    { id: 4, title: 'Total Arsip Bulan Ini', value: '156', icon: Archive, bgColor: 'bg-purple-500' },
+    { id: 1, title: 'Surat Masuk Baru', value: '18', icon: Mail, bgColor: 'bg-blue-500', path: '/surat-masuk' },
+    { id: 2, title: 'Surat Keluar Draft', value: '12', icon: Send, bgColor: 'bg-green-500', path: '/surat-keluar' },
+    { id: 3, title: 'Menunggu Disposisi', value: '8', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
+    { id: 4, title: 'Total Arsip Bulan Ini', value: '156', icon: Archive, bgColor: 'bg-purple-500', path: '/arsip' },
   ];
 
   const trackingSuratMasuk = [
@@ -103,17 +104,19 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <p className="text-sm text-gray-600 mb-2 **font-bold**">{stat.title}</p>
-                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
-                </div>
-                <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className="w-6 h-6 text-white" />
+            <Link key={stat.id} to={stat.path} className="block" aria-label={`Buka ${stat.title}`}>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 hover:shadow-md transition-shadow">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-600 mb-2 font-bold">{stat.title}</p>
+                    <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-full`}>
+                    <Icon className="w-6 h-6 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>
