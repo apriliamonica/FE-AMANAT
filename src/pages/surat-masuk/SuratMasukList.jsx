@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search, Filter, Plus, Eye, Edit2, Trash2, X } from 'lucide-react';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
@@ -20,6 +21,10 @@ const SuratMasukList = () => {
   } = useSuratStore();
 
   const { user } = useAuthStore();
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const todayParam = params.get('today');
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -53,6 +58,32 @@ const SuratMasukList = () => {
       const kategori = (s.kategori || '').toString().toLowerCase();
       return kategori === 'keuangan' || kategori.includes('keuangan');
     });
+  }
+
+  // If `?today=1` param is present, filter surat for today's date
+  if (todayParam) {
+    const isToday = (dateVal) => {
+      if (!dateVal) return false;
+      // Try to parse ISO-like date or dd/MM/yyyy
+      const iso = new Date(dateVal);
+      if (!isNaN(iso)) {
+        const isoDay = iso.toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        return isoDay === today;
+      }
+
+      // Fallback: try dd/MM/yyyy
+      const parts = dateVal.split('/');
+      if (parts.length === 3) {
+        const [d, m, y] = parts;
+        const reconstructed = `${y.padStart(4, '0')}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+        return reconstructed === new Date().toISOString().split('T')[0];
+      }
+
+      return false;
+    };
+
+    filteredData = (filteredData || []).filter((s) => isToday(s.tanggal || s.tanggalTerima || s.tanggalTerima));
   }
 
   const resetForm = () => {

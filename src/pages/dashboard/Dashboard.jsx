@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, Send, Clock, Archive } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
 
@@ -145,12 +146,12 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       <p className="text-sm text-gray-600">Posisi Saat Ini: {item.posisi}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => openTracking(item)}
+                  <Link
+                    to="/surat-masuk?today=1"
                     className="ml-4 px-4 py-2 bg-primary-700 text-white text-sm rounded-lg hover:bg-primary-800 transition-colors"
                   >
                     Lihat Tracking
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -182,12 +183,12 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       <p className="text-sm text-gray-600">Posisi Saat Ini: {item.posisi}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => openTracking(item)}
+                  <Link
+                    to="/surat-masuk?today=1"
                     className="ml-4 px-4 py-2 bg-primary-700 text-white text-sm rounded-lg hover:bg-primary-800 transition-colors"
                   >
                     Lihat Tracking
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
