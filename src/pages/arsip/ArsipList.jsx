@@ -6,6 +6,8 @@ const ArsipList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [jenisFilter, setJenisFilter] = useState('Semua Jenis');
   const [kategoriFilter, setKategoriFilter] = useState('Semua Kategori');
+  const [selectedArsip, setSelectedArsip] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
 
   // Dummy data arsip
   const arsipData = [
@@ -229,18 +231,18 @@ const ArsipList = () => {
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap text-sm'>
                     <div className='flex items-center gap-2'>
-                      <button
-                        className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-                        title='Lihat'
-                      >
-                        <Eye className='w-4 h-4 text-gray-600' />
-                      </button>
-                      <button
-                        className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-                        title='Download'
-                      >
-                        <Download className='w-4 h-4 text-gray-600' />
-                      </button>
+                        <button onClick={() => { setSelectedArsip(arsip); setShowViewModal(true); }}
+                          className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
+                          title='Lihat'
+                        >
+                          <Eye className='w-4 h-4 text-gray-600' />
+                        </button>
+                        <button onClick={() => { /* implement download logic later */ alert('Mulai mengunduh...'); }}
+                          className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
+                          title='Download'
+                        >
+                          <Download className='w-4 h-4 text-gray-600' />
+                        </button>
                     </div>
                   </td>
                 </tr>
@@ -249,6 +251,17 @@ const ArsipList = () => {
           </table>
         </div>
       </div>
+        {/* View Arsip Modal */}
+        <Modal isOpen={showViewModal} onClose={() => { setShowViewModal(false); setSelectedArsip(null); }} title="Detail Arsip" size="md">
+          {selectedArsip && (
+            <div className='space-y-3'>
+              <p className='text-sm text-gray-700'><strong>Nomor:</strong> {selectedArsip.nomorSurat}</p>
+              <p className='text-sm text-gray-700'><strong>Judul:</strong> {selectedArsip.judul}</p>
+              <p className='text-sm text-gray-700'><strong>Dari:</strong> {selectedArsip.dari}</p>
+              <p className='text-sm text-gray-700'><strong>Tanggal Arsip:</strong> {selectedArsip.tanggalArsip}</p>
+            </div>
+          )}
+        </Modal>
     </div>
   );
 };
