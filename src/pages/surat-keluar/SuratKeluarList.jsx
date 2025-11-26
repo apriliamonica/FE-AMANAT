@@ -249,6 +249,9 @@ const SuratKeluarList = () => {
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
                       )}
+                      <button onClick={() => { setSelectedSuratId(surat.id); setShowConfirmModal(true); }} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -456,6 +459,36 @@ const SuratKeluarList = () => {
             </div>
           </div>
         )}
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={showConfirmModal}
+        onClose={() => { setShowConfirmModal(false); setSelectedSuratId(null); }}
+        title="Konfirmasi Hapus Surat Keluar"
+        size="md"
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">Apakah Anda yakin ingin menghapus surat keluar ini?</p>
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button type="button" variant="outline" onClick={() => { setShowConfirmModal(false); setSelectedSuratId(null); }}>
+              Batal
+            </Button>
+            <Button type="button" variant="danger" onClick={async () => {
+              if (selectedSuratId) {
+                const res = await deleteSuratKeluar(selectedSuratId);
+                if (res && res.success) {
+                  toast.success('Surat keluar dihapus');
+                  setShowConfirmModal(false);
+                  setSelectedSuratId(null);
+                  fetchSuratKeluar();
+                }
+              }
+            }}>
+              Hapus
+            </Button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

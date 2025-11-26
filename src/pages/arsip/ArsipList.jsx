@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, Eye, Download, Mail, Send, Archive } from 'lucide-react';
 import Badge from '../../components/common/Badge/Badge';
+import Modal from '../../components/common/Modal/Modal';
 
 const ArsipList = () => {
   const [searchQuery, setSearchQuery] = useState('');
