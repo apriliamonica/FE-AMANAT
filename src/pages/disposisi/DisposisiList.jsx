@@ -172,10 +172,10 @@ const DisposisiList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
+                      <button onClick={() => openTracking(disposisi)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button className="px-3 py-1 text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded transition-colors">
+                      <button onClick={() => openUpdate(disposisi)} className="px-3 py-1 text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded transition-colors">
                         {disposisi.aksi}
                       </button>
                     </div>
@@ -186,6 +186,32 @@ const DisposisiList = () => {
           </table>
         </div>
       </div>
+        {/* Update Disposisi Modal */}
+        <Modal
+          isOpen={showUpdateModal}
+          onClose={() => { setShowUpdateModal(false); setSelectedDisposisi(null); setCatatan(''); }}
+          title="Perbarui Status Disposisi"
+          size="md"
+        >
+          {selectedDisposisi && (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">Nomor Surat: <span className="font-medium">{selectedDisposisi.nomorSurat}</span></p>
+              <label className="block text-sm font-medium text-gray-700">Catatan</label>
+              <textarea value={catatan} onChange={(e) => setCatatan(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
+              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+                <Button variant="outline" onClick={() => { setShowUpdateModal(false); setSelectedDisposisi(null); setCatatan(''); }}>Batal</Button>
+                <Button variant="primary" onClick={() => handleUpdateStatus('selesai')}>Selesai</Button>
+              </div>
+            </div>
+          )}
+        </Modal>
+
+        {/* Tracking Modal */}
+        <TrackingModal
+          isOpen={showTrackingModal}
+          onClose={() => { setShowTrackingModal(false); setSelectedDisposisi(null); }}
+          surat={selectedDisposisi}
+        />
     </div>
   );
 };
