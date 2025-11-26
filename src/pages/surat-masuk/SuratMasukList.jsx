@@ -5,6 +5,7 @@ import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import { formatDate } from '../../utils/helpers';
+import useAuthStore from '../../store/authStore';
 import { PRIORITAS_LABELS, JENIS_SURAT_LABELS, SURAT_STATUS_LABELS } from '../../utils/constants';
 
 const SuratMasukList = () => {
@@ -17,6 +18,8 @@ const SuratMasukList = () => {
     deleteSuratMasuk,
     searchSuratMasuk,
   } = useSuratStore();
+
+  const { user } = useAuthStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -40,9 +43,17 @@ const SuratMasukList = () => {
   }, [fetchSuratMasuk]);
 
   // Filter data based on search
-  const filteredData = searchQuery
+  let filteredData = searchQuery
     ? searchSuratMasuk(searchQuery)
     : suratMasuk;
+
+  // Role-based filter: Bendahara hanya melihat kategori 'keuangan'
+  if (user && (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))) {
+    filteredData = (filteredData || []).filter((s) => {
+      const kategori = (s.kategori || '').toString().toLowerCase();
+      return kategori === 'keuangan' || kategori.includes('keuangan');
+    });
+  }
 
   const resetForm = () => {
     setFormData({

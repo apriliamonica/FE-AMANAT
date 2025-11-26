@@ -4,6 +4,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
+import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
 
 const SuratKeluarList = () => {
@@ -32,14 +33,24 @@ const SuratKeluarList = () => {
     searchSuratKeluar 
   } = useSuratStore();
 
+  const { user } = useAuthStore();
+
   useEffect(() => {
     fetchSuratKeluar();
   }, [fetchSuratKeluar]);
 
   // Filter data based on search
-  const filteredData = searchQuery 
+  let filteredData = searchQuery 
     ? searchSuratKeluar(searchQuery)
     : suratKeluar;
+
+  // Role-based filter: Bendahara hanya melihat kategori 'keuangan'
+  if (user && (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))) {
+    filteredData = (filteredData || []).filter((s) => {
+      const kategori = (s.kategori || '').toString().toLowerCase();
+      return kategori === 'keuangan' || kategori.includes('keuangan');
+    });
+  }
 
   const suratKeluarData = filteredData || [
     {
