@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal/Modal';
 import { CheckCircle, Clock, FileText, Calendar, Send, User, Archive, AlertCircle, Paperclip } from 'lucide-react';
 import useDisposisiStore from '../../store/disposisiStore';
+import useAuthStore from '../../store/authStore';
+import useSuratStore from '../../store/suratStore';
+import toast from 'react-hot-toast';
 import { formatDateTime } from '../../utils/helpers';
 
 // --- 1. DETAIL TAB ---
@@ -142,16 +145,177 @@ const DisposisiTab = ({ surat }) => (
   </div>
 );
 
-// --- 4. LAMPIRAN TAB (Mock-up) ---
-const LampiranTab = ({ surat }) => (
-    <div className="pt-2 min-h-[350px]"> {/* Diberi tinggi minimum */}
+// --- 4. LAMPIRAN TAB (Functional) ---
+const LampiranTab = ({ surat }) => {
+  const { user } = useAuthStore();
+  const { createSuratKeluar } = useSuratStore();
+  const { createDisposisi, updateDisposisiStatus } = useDisposisiStore();
+
+  // For demo purposes: requested attachments come from surat.requestedAttachments or fallback list
+  const requested = surat.requestedAttachments || [
+    'detail_alat.xlsx',
+    'budget_estimate.pdf',
+    'proposal_kegiatan.docx',
+  ];
+
+  const [files, setFiles] = useState([]);
+  const [matched, setMatched] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [detectedNomor, setDetectedNomor] = useState('');
+
+  useEffect(() => {
+    // Auto-detect nomor surat dari surat.nomorSurat
+    if (surat && surat.nomorSurat) {
+      setDetectedNomor(surat.nomorSurat);
+    }
+  }, [surat]);
+
+  const handleFileChange = (e) => {
+    const selected = Array.from(e.target.files);
+    setFiles(selected);
+
+    // check for matching names (simple contains or exact)
+    const check = {};
+    requested.forEach((r) => {
+      const found = selected.find((f) => f.name.toLowerCase().includes(r.split('.')[0].toLowerCase()) || f.name.toLowerCase() === r.toLowerCase());
+      check[r] = !!found;
+    });
+    setMatched(check);
+  };
+
+  const allMatched = Object.values(matched).every(Boolean) && requested.length > 0;
+
+  const handleConfirm = async () => {
+    if (!user) return toast.error('User tidak terautentikasi');
+
+    // Basic validations
+    if (!detectedNomor) return toast.error('Nomor surat tidak terdeteksi');
+    if (!allMatched) return toast.error('Mohon upload semua lampiran yang diminta');
+
+    setIsSubmitting(true);
+    try {
+      // Create surat lampiran (mocked) -- nomor generated using timestamp & bagian
+      const bagianKey = (user.bagian || 'umum').toUpperCase();
+      const now = new Date();
+      const tahun = now.getFullYear();
+      const nomorGenerated = `SK/LAMP/${bagianKey}/${now.getTime()}`;
+
+      const newSurat = {
+        nomorSurat: nomorGenerated,
+        dari: user.role_label || user.name,
+        tujuan: 'Sekretaris Kantor',
+        perihal: `Lampiran untuk ${detectedNomor}`,
+        tanggal: now.toISOString().split('T')[0],
+        kategori: 'lampiran',
+        status: 'draft',
+        attachments: files.map((f) => ({ name: f.name, size: f.size })),
+      };
+
+      const res = await createSuratKeluar(newSurat);
+
+      if (res.success) {
+        // Update original disposisi (if surat has disposisiId)
+        if (surat.disposisiId) {
+          await updateDisposisiStatus(surat.disposisiId, 'selesai', `Lampiran ${nomorGenerated} dibuat oleh ${user.role_label || user.name}`);
+        }
+
+        // Create disposisi balik to sekretaris kantor
+        await createDisposisi({
+          nomorSurat: detectedNomor,
+          dari: user.role_label || user.name,
+          kepada: 'sekretaris_kantor',
+          perihal: `Lampiran untuk ${detectedNomor}`,
+          instruksi: `Lampiran ${nomorGenerated} telah dibuat dan siap ditandatangani`,
+          tenggatWaktu: '',
+        });
+
+        toast.success('Lampiran berhasil diupload dan surat lampiran dibuat');
+        // reset
+        setFiles([]);
+        setMatched({});
+      } else {
+        throw new Error(res.error || 'Gagal membuat surat lampiran');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || 'Terjadi kesalahan saat membuat lampiran');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="pt-2 min-h-[350px]">
       <h4 className="font-semibold text-gray-900 mb-4">Daftar Lampiran</h4>
-      <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg h-full flex flex-col justify-center items-center">
-          <Paperclip className="w-8 h-8 mx-auto mb-3 text-gray-400" />
-          <p>Daftar file lampiran surat akan ditampilkan di sini.</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <p className="text-sm text-gray-600 mb-2">Lampiran Diminta</p>
+          <ul className="space-y-2">
+            {requested.map((r) => (
+              <li key={r} className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Paperclip className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-gray-800">{r}</span>
+                </div>
+                <span className={`text-xs font-medium ${matched[r] ? 'text-green-600' : 'text-gray-400'}`}>
+                  {matched[r] ? 'Terverifikasi' : 'Belum diupload'}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <p className="text-sm text-gray-600 mb-2">Upload Lampiran</p>
+          <div className="mb-3">
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              className="w-full file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700"
+            />
+          </div>
+
+          <div className="text-sm text-gray-600 mb-3">
+            <p>Nomor surat terdeteksi: <span className="font-medium">{detectedNomor || '—'}</span></p>
+          </div>
+
+          <div className="space-y-2 mb-3">
+            {files.map((f, i) => (
+              <div key={i} className="flex items-center justify-between text-sm text-gray-700">
+                <span>{f.name}</span>
+                <span className="text-xs text-gray-500">{Math.round(f.size / 1024)} KB</span>
+              </div>
+            ))}
+            {files.length === 0 && (
+              <div className="text-xs text-gray-400">Belum ada file yang dipilih</div>
+            )}
+          </div>
+
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+            <button
+              type="button"
+              onClick={() => { setFiles([]); setMatched({}); }}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+              disabled={isSubmitting}
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition-colors"
+              disabled={isSubmitting || !allMatched}
+            >
+              {isSubmitting ? 'Menyimpan...' : 'Confirm & Create Surat Lampiran'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-);
+  );
+};
 
 
 // --- Komponen Modal Utama: MailDetailModal ---
