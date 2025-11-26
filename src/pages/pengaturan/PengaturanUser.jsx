@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, UserPlus } from 'lucide-react';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
+import useUserStore from '../../store/userStore';
 
 const PengaturanUser = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,88 +18,61 @@ const PengaturanUser = () => {
     status: 'aktif',
   });
 
-  // Dummy data users
-  const usersData = [
-    {
-      id: 1,
-      nama: 'Rudi Santoso',
-      email: 'rudi@amanat.com',
-      username: 'admin',
-      role: 'Sekretaris Kantor',
-      bagian: '-',
-      status: 'aktif',
-    },
-    {
-      id: 2,
-      nama: 'Dr. Ahmad Fauzi',
-      email: 'ahmad.fauzi@amanat.com',
-      username: 'ketua',
-      role: 'Ketua Pengurus',
-      bagian: '-',
-      status: 'aktif',
-    },
-    {
-      id: 3,
-      nama: 'Siti Nurhaliza',
-      email: 'siti@amanat.com',
-      username: 'sekretaris',
-      role: 'Sekretaris Pengurus',
-      bagian: '-',
-      status: 'aktif',
-    },
-    {
-      id: 4,
-      nama: 'Budi Prasetyo',
-      email: 'budi@amanat.com',
-      username: 'bendahara',
-      role: 'Bendahara Pengurus',
-      bagian: '-',
-      status: 'aktif',
-    },
-    {
-      id: 5,
-      nama: 'Andi Wijaya',
-      email: 'andi@amanat.com',
-      username: 'kabag_psdm',
-      role: 'Kepala Bagian',
-      bagian: 'PSDM',
-      status: 'aktif',
-    },
-    {
-      id: 6,
-      nama: 'Dewi Kartika',
-      email: 'dewi@amanat.com',
-      username: 'kabag_keuangan',
-      role: 'Kepala Bagian',
-      bagian: 'Keuangan',
-      status: 'aktif',
-    },
-    {
-      id: 7,
-      nama: 'Hadi Saputra',
-      email: 'hadi@amanat.com',
-      username: 'kabag_umum',
-      role: 'Kepala Bagian',
-      bagian: 'Umum',
-      status: 'nonaktif',
-    },
-  ];
+  const { users, fetchUsers, createUser, updateUser, deleteUser, isLoading } = useUserStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // TODO: Implement API call
-    setShowModal(false);
-    // Reset form
+    (async () => {
+      if (editingId) {
+        const res = await updateUser(editingId, formData);
+        if (res && res.success) {
+          setShowModal(false);
+          setEditingId(null);
+        }
+      } else {
+        const res = await createUser(formData);
+        if (res && res.success) {
+          setShowModal(false);
+        }
+      }
+
+      setFormData({
+        nama: '',
+        email: '',
+        username: '',
+        password: '',
+        role: '',
+        bagian: '',
+        status: 'aktif',
+      });
+    })();
+  };
+
+  const [editingId, setEditingId] = useState(null);
+
+  const handleEdit = (user) => {
     setFormData({
-      nama: '',
-      email: '',
-      username: '',
+      nama: user.nama || '',
+      email: user.email || '',
+      username: user.username || '',
       password: '',
-      role: '',
-      bagian: '',
-      status: 'aktif',
+      role: user.role || '',
+      bagian: user.bagian || '',
+      status: user.status || 'aktif',
     });
+    setEditingId(user.id);
+    setShowModal(true);
+  };
+
+  const handleDelete = async (id) => {
+    const res = await deleteUser(id);
+    if (res && res.success) {
+      // no extra action needed; store updates
+    }
   };
 
   const handleChange = (e) => {
@@ -166,7 +140,7 @@ const PengaturanUser = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {usersData.map((user) => (
+              {(users || []).map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {user.nama}
@@ -177,7 +151,7 @@ const PengaturanUser = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.username}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.role}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.role_label || user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.bagian}
                   </td>
@@ -188,13 +162,13 @@ const PengaturanUser = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button
+                      <button onClick={() => handleEdit(user)}
                         className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button
+                      <button onClick={() => handleDelete(user.id)}
                         className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                         title="Hapus"
                       >
