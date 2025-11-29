@@ -6,6 +6,12 @@ import useAuthStore from '../../store/authStore';
 import useSuratStore from '../../store/suratStore';
 import toast from 'react-hot-toast';
 import { formatDateTime } from '../../utils/helpers';
+import {
+  SURAT_KELUAR_STATUS,
+  SURAT_MASUK_STATUS,
+  SURAT_MASUK_STATUS_LABELS,
+  SURAT_KELUAR_STATUS_LABELS,
+} from '../../utils/constants';
 
 // --- 1. DETAIL TAB ---
 const DetailTab = ({ surat }) => (
@@ -78,14 +84,29 @@ const TrackingTab = ({ surat }) => {
   }, [surat, fetchTrackingHistory]);
 
   const getStatusIcon = (status) => {
-    const lowerStatus = status.toLowerCase();
-    if (lowerStatus.includes('selesai') || lowerStatus.includes('disetujui')) {
+    const s = (status || '').toLowerCase();
+    // Completed / sent
+    if (
+      s === String(SURAT_MASUK_STATUS.SELESAI) ||
+      s === String(SURAT_KELUAR_STATUS.TERKIRIM) ||
+      s.includes('disetujui') ||
+      s.includes('selesai')
+    ) {
       return <CheckCircle className="w-5 h-5 text-green-600" />;
-    } else if (lowerStatus.includes('proses') || lowerStatus.includes('review') || lowerStatus.includes('tindak lanjut')) {
-      return <Clock className="w-5 h-5 text-yellow-500" />;
-    } else {
-      return <FileText className="w-5 h-5 text-blue-500" />;
     }
+
+    // In progress / review / tindak lanjut
+    if (
+      s === String(SURAT_MASUK_STATUS.DIPROSES) ||
+      s === String(SURAT_MASUK_STATUS.DISPOSISI_KETUA) ||
+      s.includes('proses') ||
+      s.includes('review') ||
+      s.includes('tindak lanjut')
+    ) {
+      return <Clock className="w-5 h-5 text-yellow-500" />;
+    }
+
+    return <FileText className="w-5 h-5 text-blue-500" />;
   };
 
   return (
@@ -111,7 +132,9 @@ const TrackingTab = ({ surat }) => {
 
                 <div className="ml-0 p-4 border border-gray-200 rounded-lg bg-white shadow-sm flex-1 -mt-1 hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-1">
-                    <h5 className="font-semibold text-gray-900">{item.status}</h5>
+                    <h5 className="font-semibold text-gray-900">{(
+                      SURAT_MASUK_STATUS_LABELS[item.status] || SURAT_KELUAR_STATUS_LABELS[item.status] || item.status
+                    )}</h5>
                     <span className="text-xs text-gray-500">{formatDateTime(item.tanggal)}</span>
                   </div>
                   <p className="text-sm text-gray-600 mb-1">{item.keterangan}</p>
@@ -207,7 +230,7 @@ const LampiranTab = ({ surat }) => {
         perihal: `Lampiran untuk ${detectedNomor}`,
         tanggal: now.toISOString().split('T')[0],
         kategori: 'lampiran',
-        status: 'draft',
+        status: SURAT_KELUAR_STATUS.DRAFT,
         attachments: files.map((f) => ({ name: f.name, size: f.size })),
       };
 
@@ -216,7 +239,11 @@ const LampiranTab = ({ surat }) => {
       if (res.success) {
         // Update original disposisi (if surat has disposisiId)
         if (surat.disposisiId) {
-          await updateDisposisiStatus(surat.disposisiId, 'selesai', `Lampiran ${nomorGenerated} dibuat oleh ${user.role_label || user.name}`);
+          await updateDisposisiStatus(
+            surat.disposisiId,
+            SURAT_MASUK_STATUS.SELESAI,
+            `Lampiran ${nomorGenerated} dibuat oleh ${user.role_label || user.name}`
+          );
         }
 
         // Create disposisi balik to sekretaris kantor
@@ -350,11 +377,15 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
             </p>
           </div>
           <div className="flex space-x-2">
-            <span className="px-3 py-1 text-xs font-semibold bg-orange-100 text-orange-700 rounded-full">
-              Menunggu Tindak Lanjut
+            {/* Status label dari konstanta jika tersedia, fallback ke teks literal */}
+            <span className="px-3 py-1 text-xs font-semibold rounded-full" 
+              style={{}}>
+              {(SURAT_MASUK_STATUS_LABELS[surat.status] || SURAT_KELUAR_STATUS_LABELS[surat.status] || 'Menunggu Tindak Lanjut')}
             </span>
+
+            {/* Jenis surat (kategori) */}
             <span className="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
-              Surat Masuk
+              {surat.kategori ? surat.kategori.charAt(0).toUpperCase() + surat.kategori.slice(1) : 'Surat Masuk'}
             </span>
           </div>
         </div>
