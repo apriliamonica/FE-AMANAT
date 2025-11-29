@@ -58,7 +58,8 @@ const useSuratStore = create((set, get) => ({
         return mockData;
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Gagal memuat surat masuk';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Gagal memuat surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       throw error;
@@ -99,7 +100,8 @@ const useSuratStore = create((set, get) => ({
         return { success: true, data: newSurat };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Gagal menambahkan surat masuk';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Gagal menambahkan surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
@@ -113,9 +115,7 @@ const useSuratStore = create((set, get) => ({
         const response = await suratService.updateSuratMasuk(id, data);
         const updatedSurat = response.data || response;
         set((state) => ({
-          suratMasuk: state.suratMasuk.map((surat) =>
-            surat.id === id ? updatedSurat : surat
-          ),
+          suratMasuk: state.suratMasuk.map((surat) => (surat.id === id ? updatedSurat : surat)),
           isLoading: false,
         }));
         toast.success('Surat masuk berhasil diupdate');
@@ -136,7 +136,8 @@ const useSuratStore = create((set, get) => ({
         return { success: true };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Gagal mengupdate surat masuk';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Gagal mengupdate surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
@@ -168,7 +169,8 @@ const useSuratStore = create((set, get) => ({
         return { success: true };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Gagal menghapus surat masuk';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Gagal menghapus surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
@@ -279,7 +281,8 @@ const useSuratStore = create((set, get) => ({
         return { success: true };
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || 'Gagal menghapus surat keluar';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Gagal menghapus surat keluar';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };

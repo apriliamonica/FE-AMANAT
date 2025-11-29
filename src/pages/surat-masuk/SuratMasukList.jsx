@@ -6,7 +6,11 @@ import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import { formatDate } from '../../utils/helpers';
 import useAuthStore from '../../store/authStore';
-import { PRIORITAS_LABELS, JENIS_SURAT_LABELS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
+import {
+  PRIORITAS_LABELS,
+  JENIS_SURAT_LABELS,
+  SURAT_MASUK_STATUS_LABELS,
+} from '../../utils/constants';
 
 const SuratMasukList = () => {
   const {
@@ -43,12 +47,13 @@ const SuratMasukList = () => {
   }, [fetchSuratMasuk]);
 
   // Filter data based on search
-  let filteredData = searchQuery
-    ? searchSuratMasuk(searchQuery)
-    : suratMasuk;
+  let filteredData = searchQuery ? searchSuratMasuk(searchQuery) : suratMasuk;
 
   // Role-based filter: Bendahara hanya melihat kategori 'keuangan'
-  if (user && (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))) {
+  if (
+    user &&
+    (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))
+  ) {
     filteredData = (filteredData || []).filter((s) => {
       const kategori = (s.kategori || '').toString().toLowerCase();
       return kategori === 'keuangan' || kategori.includes('keuangan');
@@ -445,7 +450,9 @@ const SuratMasukList = () => {
                 <p className="text-sm text-gray-900">{selectedSurat.nomorSurat}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal Terima</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tanggal Terima
+                </label>
                 <p className="text-sm text-gray-900">
                   {formatDate(selectedSurat.tanggal || selectedSurat.tanggalTerima)}
                 </p>

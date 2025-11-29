@@ -26,14 +26,14 @@ const SuratKeluarList = () => {
     lampiran: null,
   });
 
-  const { 
-    suratKeluar, 
+  const {
+    suratKeluar,
     isLoading,
-    fetchSuratKeluar, 
-    createSuratKeluar, 
+    fetchSuratKeluar,
+    createSuratKeluar,
     sendSuratKeluar,
     deleteSuratKeluar,
-    searchSuratKeluar 
+    searchSuratKeluar,
   } = useSuratStore();
 
   const { user } = useAuthStore();
@@ -43,12 +43,13 @@ const SuratKeluarList = () => {
   }, [fetchSuratKeluar]);
 
   // Filter data based on search
-  let filteredData = searchQuery 
-    ? searchSuratKeluar(searchQuery)
-    : suratKeluar;
+  let filteredData = searchQuery ? searchSuratKeluar(searchQuery) : suratKeluar;
 
   // Role-based filter: Bendahara hanya melihat kategori 'keuangan'
-  if (user && (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))) {
+  if (
+    user &&
+    (user.role === 'bendahara_pengurus' || user.role?.toLowerCase().includes('bendahara'))
+  ) {
     filteredData = (filteredData || []).filter((s) => {
       const kategori = (s.kategori || '').toString().toLowerCase();
       return kategori === 'keuangan' || kategori.includes('keuangan');
@@ -139,12 +140,12 @@ const SuratKeluarList = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
     const { name } = e.target;
-    setFormData(prev => ({ ...prev, [name]: e.target.files[0] }));
+    setFormData((prev) => ({ ...prev, [name]: e.target.files[0] }));
   };
 
   return (
@@ -175,8 +176,8 @@ const SuratKeluarList = () => {
             <Button variant="outline" icon={Filter} className="flex-1 sm:flex-none">
               Filter
             </Button>
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               icon={Plus}
               onClick={() => setShowModal(true)}
               className="flex-1 sm:flex-none"
@@ -228,9 +229,7 @@ const SuratKeluarList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {surat.tanggal}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {surat.perihal}
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {surat.kategori}
                   </td>
@@ -241,15 +240,31 @@ const SuratKeluarList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => handleOpenView(surat)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
+                      <button
+                        onClick={() => handleOpenView(surat)}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Lihat"
+                      >
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
                       {surat.status === SURAT_KELUAR_STATUS.DRAFT && (
-                        <button onClick={() => handleSend(surat.id)} className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim" disabled={isLoading}>
+                        <button
+                          onClick={() => handleSend(surat.id)}
+                          className="p-1.5 hover:bg-green-50 rounded-lg transition-colors"
+                          title="Kirim"
+                          disabled={isLoading}
+                        >
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
                       )}
-                      <button onClick={() => { setSelectedSuratId(surat.id); setShowConfirmModal(true); }} className="p-1.5 hover:bg-red-50 rounded-lg transition-colors" title="Hapus">
+                      <button
+                        onClick={() => {
+                          setSelectedSuratId(surat.id);
+                          setShowConfirmModal(true);
+                        }}
+                        className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Hapus"
+                      >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
                     </div>
@@ -404,17 +419,14 @@ const SuratKeluarList = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Surat akan disimpan sebagai draft dan memerlukan tanda tangan digital dari pimpinan sebelum dikirim.
+              Surat akan disimpan sebagai draft dan memerlukan tanda tangan digital dari pimpinan
+              sebelum dikirim.
             </p>
           </div>
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setShowModal(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => setShowModal(false)}>
               Batal
             </Button>
             <Button type="submit" variant="primary">
@@ -442,18 +454,29 @@ const SuratKeluarList = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-              <p className="text-sm text-gray-900">{selectedSurat.tanggal || selectedSurat.tanggalSurat}</p>
+              <p className="text-sm text-gray-900">
+                {selectedSurat.tanggal || selectedSurat.tanggalSurat}
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tujuan</label>
-              <p className="text-sm text-gray-900">{selectedSurat.tujuan || selectedSurat.tujuanSurat}</p>
+              <p className="text-sm text-gray-900">
+                {selectedSurat.tujuan || selectedSurat.tujuanSurat}
+              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Perihal</label>
               <p className="text-sm text-gray-900">{selectedSurat.perihal}</p>
             </div>
             <div className="flex justify-end pt-4 border-t border-gray-200">
-              <Button type="button" variant="outline" onClick={() => { setShowViewModal(false); setSelectedSurat(null); }}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setShowViewModal(false);
+                  setSelectedSurat(null);
+                }}
+              >
                 Tutup
               </Button>
             </div>
@@ -464,27 +487,43 @@ const SuratKeluarList = () => {
       {/* Delete Confirmation Modal */}
       <Modal
         isOpen={showConfirmModal}
-        onClose={() => { setShowConfirmModal(false); setSelectedSuratId(null); }}
+        onClose={() => {
+          setShowConfirmModal(false);
+          setSelectedSuratId(null);
+        }}
         title="Konfirmasi Hapus Surat Keluar"
         size="md"
       >
         <div className="space-y-4">
-          <p className="text-sm text-gray-600">Apakah Anda yakin ingin menghapus surat keluar ini?</p>
+          <p className="text-sm text-gray-600">
+            Apakah Anda yakin ingin menghapus surat keluar ini?
+          </p>
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <Button type="button" variant="outline" onClick={() => { setShowConfirmModal(false); setSelectedSuratId(null); }}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowConfirmModal(false);
+                setSelectedSuratId(null);
+              }}
+            >
               Batal
             </Button>
-            <Button type="button" variant="danger" onClick={async () => {
-              if (selectedSuratId) {
-                const res = await deleteSuratKeluar(selectedSuratId);
-                if (res && res.success) {
-                  toast.success('Surat keluar dihapus');
-                  setShowConfirmModal(false);
-                  setSelectedSuratId(null);
-                  fetchSuratKeluar();
+            <Button
+              type="button"
+              variant="danger"
+              onClick={async () => {
+                if (selectedSuratId) {
+                  const res = await deleteSuratKeluar(selectedSuratId);
+                  if (res && res.success) {
+                    toast.success('Surat keluar dihapus');
+                    setShowConfirmModal(false);
+                    setSelectedSuratId(null);
+                    fetchSuratKeluar();
+                  }
                 }
-              }
-            }}>
+              }}
+            >
               Hapus
             </Button>
           </div>

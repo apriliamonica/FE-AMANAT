@@ -93,34 +93,32 @@ const ArsipList = () => {
   return (
     <div>
       {/* Page Header */}
-      <div className='mb-6'>
-        <h1 className='text-2xl font-bold text-gray-900'>Arsip Surat</h1>
-        <p className='text-gray-600 mt-1'>
-          Kelola dan cari arsip surat yang telah selesai
-        </p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Arsip Surat</h1>
+        <p className="text-gray-600 mt-1">Kelola dan cari arsip surat yang telah selesai</p>
       </div>
 
       {/* Search & Filter */}
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6'>
-        <div className='flex flex-col lg:flex-row gap-4'>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+        <div className="flex flex-col lg:flex-row gap-4">
           {/* Search Bar */}
-          <div className='relative flex-1'>
-            <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400' />
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
-              type='text'
-              placeholder='Cari nomor surat, judul, atau asal...'
+              type="text"
+              placeholder="Cari nomor surat, judul, atau asal..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
 
           {/* Filters */}
-          <div className='flex gap-2'>
+          <div className="flex gap-2">
             <select
               value={jenisFilter}
               onChange={(e) => setJenisFilter(e.target.value)}
-              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option>Semua Jenis</option>
               <option>Surat Masuk</option>
@@ -130,7 +128,7 @@ const ArsipList = () => {
             <select
               value={kategoriFilter}
               onChange={(e) => setKategoriFilter(e.target.value)}
-              className='px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none'
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option>Semua Kategori</option>
               <option>Undangan</option>
@@ -142,23 +140,18 @@ const ArsipList = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6'>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div
-              key={stat.id}
-              className='bg-white rounded-lg shadow-sm border border-gray-200 p-5'
-            >
-              <div className='flex items-start justify-between'>
-                <div className='flex-1'>
-                  <p className='text-sm text-gray-600 mb-2'>{stat.title}</p>
-                  <p className='text-3xl font-bold text-gray-900'>
-                    {stat.value}
-                  </p>
+            <div key={stat.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 mb-2">{stat.title}</p>
+                  <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
                 </div>
                 <div className={`${stat.bgColor} p-3 rounded-full`}>
-                  <Icon className='w-6 h-6 text-white' />
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
               </div>
             </div>
@@ -167,80 +160,78 @@ const ArsipList = () => {
       </div>
 
       {/* Table */}
-      <div className='bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden'>
-        <div className='overflow-x-auto'>
-          <table className='w-full'>
-            <thead className='bg-gray-50 border-b border-gray-200'>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nomor Surat
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Jenis
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Judul/Perihal
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Dari/Kepada
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tanggal Surat
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tanggal Arsip
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Kategori
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Aksi
                 </th>
               </tr>
             </thead>
-            <tbody className='bg-white divide-y divide-gray-200'>
+            <tbody className="bg-white divide-y divide-gray-200">
               {arsipData.map((arsip) => (
-                <tr
-                  key={arsip.id}
-                  className='hover:bg-gray-50 transition-colors'
-                >
-                  <td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900'>
+                <tr key={arsip.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {arsip.nomorSurat}
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap'>
-                    <Badge variant={SURAT_MASUK_STATUS.SELESAI}>
-                      {arsip.jenis}
-                    </Badge>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <Badge variant={SURAT_MASUK_STATUS.SELESAI}>{arsip.jenis}</Badge>
                   </td>
-                  <td className='px-6 py-4 text-sm text-gray-600'>
-                    {arsip.judul}
-                  </td>
-                  <td className='px-6 py-4 text-sm text-gray-600'>
-                    {arsip.dari}
-                  </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600'>
+                  <td className="px-6 py-4 text-sm text-gray-600">{arsip.judul}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{arsip.dari}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {arsip.tanggalSurat}
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600'>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {arsip.tanggalArsip}
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600'>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {arsip.kategori}
                   </td>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm'>
-                    <div className='flex items-center gap-2'>
-                        <button onClick={() => { setSelectedArsip(arsip); setShowViewModal(true); }}
-                          className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-                          title='Lihat'
-                        >
-                          <Eye className='w-4 h-4 text-gray-600' />
-                        </button>
-                        <button onClick={() => { /* implement download logic later */ alert('Mulai mengunduh...'); }}
-                          className='p-1.5 hover:bg-gray-100 rounded-lg transition-colors'
-                          title='Download'
-                        >
-                          <Download className='w-4 h-4 text-gray-600' />
-                        </button>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          setSelectedArsip(arsip);
+                          setShowViewModal(true);
+                        }}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Lihat"
+                      >
+                        <Eye className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          /* implement download logic later */ alert('Mulai mengunduh...');
+                        }}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Download"
+                      >
+                        <Download className="w-4 h-4 text-gray-600" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -249,17 +240,33 @@ const ArsipList = () => {
           </table>
         </div>
       </div>
-        {/* View Arsip Modal */}
-        <Modal isOpen={showViewModal} onClose={() => { setShowViewModal(false); setSelectedArsip(null); }} title="Detail Arsip" size="md">
-          {selectedArsip && (
-            <div className='space-y-3'>
-              <p className='text-sm text-gray-700'><strong>Nomor:</strong> {selectedArsip.nomorSurat}</p>
-              <p className='text-sm text-gray-700'><strong>Judul:</strong> {selectedArsip.judul}</p>
-              <p className='text-sm text-gray-700'><strong>Dari:</strong> {selectedArsip.dari}</p>
-              <p className='text-sm text-gray-700'><strong>Tanggal Arsip:</strong> {selectedArsip.tanggalArsip}</p>
-            </div>
-          )}
-        </Modal>
+      {/* View Arsip Modal */}
+      <Modal
+        isOpen={showViewModal}
+        onClose={() => {
+          setShowViewModal(false);
+          setSelectedArsip(null);
+        }}
+        title="Detail Arsip"
+        size="md"
+      >
+        {selectedArsip && (
+          <div className="space-y-3">
+            <p className="text-sm text-gray-700">
+              <strong>Nomor:</strong> {selectedArsip.nomorSurat}
+            </p>
+            <p className="text-sm text-gray-700">
+              <strong>Judul:</strong> {selectedArsip.judul}
+            </p>
+            <p className="text-sm text-gray-700">
+              <strong>Dari:</strong> {selectedArsip.dari}
+            </p>
+            <p className="text-sm text-gray-700">
+              <strong>Tanggal Arsip:</strong> {selectedArsip.tanggalArsip}
+            </p>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 };

@@ -151,7 +151,9 @@ const PengaturanUser = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.username}
                   </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.role_label || user.role}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {user.role_label || user.role}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.bagian}
                   </td>
@@ -162,13 +164,15 @@ const PengaturanUser = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => handleEdit(user)}
+                      <button
+                        onClick={() => handleEdit(user)}
                         className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                         title="Edit"
                       >
                         <Edit2 className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button onClick={() => handleDelete(user.id)}
+                      <button
+                        onClick={() => handleDelete(user.id)}
                         className="p-1.5 hover:bg-red-50 rounded-lg transition-colors"
                         title="Hapus"
                       >

@@ -14,7 +14,7 @@ const useDisposisiStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       // Mock data
-        const mockData = [
+      const mockData = [
         {
           id: 1,
           nomorSurat: '001/SM/V/2025',

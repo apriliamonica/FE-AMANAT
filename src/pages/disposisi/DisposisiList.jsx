@@ -4,7 +4,7 @@ import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
 import useDisposisiStore from '../../store/disposisiStore';
-import TrackingModal from "../../components/Features/TrackingModal.jsx";
+import TrackingModal from '../../components/Features/TrackingModal.jsx';
 import toast from 'react-hot-toast';
 import { SURAT_MASUK_STATUS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
 
@@ -15,12 +15,7 @@ const DisposisiList = () => {
   const [selectedDisposisi, setSelectedDisposisi] = useState(null);
   const [catatan, setCatatan] = useState('');
 
-  const { 
-    disposisiList, 
-    isLoading,
-    fetchDisposisi,
-    updateDisposisiStatus 
-  } = useDisposisiStore();
+  const { disposisiList, isLoading, fetchDisposisi, updateDisposisiStatus } = useDisposisiStore();
 
   useEffect(() => {
     fetchDisposisi();
@@ -39,12 +34,8 @@ const DisposisiList = () => {
 
   const handleUpdateStatus = async (status) => {
     if (selectedDisposisi) {
-      const result = await updateDisposisiStatus(
-        selectedDisposisi.id, 
-        status, 
-        catatan
-      );
-      
+      const result = await updateDisposisiStatus(selectedDisposisi.id, status, catatan);
+
       if (result.success) {
         setShowUpdateModal(false);
         setSelectedDisposisi(null);
@@ -55,38 +46,41 @@ const DisposisiList = () => {
   };
 
   // Dummy data disposisi
-  const disposisiData = disposisiList.length > 0 ? disposisiList : [
-    {
-      id: 1,
-      nomorSurat: '001/SM/V/2025',
-      dari: 'Admin',
-      kepada: 'Ketua Yayasan',
-      perihal: 'Undangan Rapat Koordinasi Pendidikan',
-      tenggatWaktu: '16/10/2025',
-      status: SURAT_MASUK_STATUS.SELESAI,
-      aksi: 'Lanjut',
-    },
-    {
-      id: 2,
-      nomorSurat: '002/SM/V/2025',
-      dari: 'Admin',
-      kepada: 'Bendahara',
-      perihal: 'Pemberian/huan Pencairan Dana Bantuan',
-      tenggatWaktu: '20/10/2025',
-      status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
-      aksi: 'Lanjut',
-    },
-    {
-      id: 3,
-      nomorSurat: '003/SM/V/2025',
-      dari: 'Admin',
-      kepada: 'Sekretaris Yayasan',
-      perihal: 'Verifikasi Data Kepegawaian',
-      tenggatWaktu: '18/10/2025',
-      status: SURAT_MASUK_STATUS.DIPROSES,
-      aksi: 'Lanjut',
-    },
-  ];
+  const disposisiData =
+    disposisiList.length > 0
+      ? disposisiList
+      : [
+          {
+            id: 1,
+            nomorSurat: '001/SM/V/2025',
+            dari: 'Admin',
+            kepada: 'Ketua Yayasan',
+            perihal: 'Undangan Rapat Koordinasi Pendidikan',
+            tenggatWaktu: '16/10/2025',
+            status: SURAT_MASUK_STATUS.SELESAI,
+            aksi: 'Lanjut',
+          },
+          {
+            id: 2,
+            nomorSurat: '002/SM/V/2025',
+            dari: 'Admin',
+            kepada: 'Bendahara',
+            perihal: 'Pemberian/huan Pencairan Dana Bantuan',
+            tenggatWaktu: '20/10/2025',
+            status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
+            aksi: 'Lanjut',
+          },
+          {
+            id: 3,
+            nomorSurat: '003/SM/V/2025',
+            dari: 'Admin',
+            kepada: 'Sekretaris Yayasan',
+            perihal: 'Verifikasi Data Kepegawaian',
+            tenggatWaktu: '18/10/2025',
+            status: SURAT_MASUK_STATUS.DIPROSES,
+            aksi: 'Lanjut',
+          },
+        ];
 
   return (
     <div>
@@ -159,9 +153,7 @@ const DisposisiList = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {disposisi.kepada}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {disposisi.perihal}
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{disposisi.perihal}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {disposisi.tenggatWaktu}
                   </td>
@@ -172,10 +164,17 @@ const DisposisiList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <div className="flex items-center gap-2">
-                      <button onClick={() => openTracking(disposisi)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
+                      <button
+                        onClick={() => openTracking(disposisi)}
+                        className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                        title="Lihat"
+                      >
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button onClick={() => openUpdate(disposisi)} className="px-3 py-1 text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded transition-colors">
+                      <button
+                        onClick={() => openUpdate(disposisi)}
+                        className="px-3 py-1 text-xs font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded transition-colors"
+                      >
                         {disposisi.aksi}
                       </button>
                     </div>
@@ -186,32 +185,60 @@ const DisposisiList = () => {
           </table>
         </div>
       </div>
-        {/* Update Disposisi Modal */}
-        <Modal
-          isOpen={showUpdateModal}
-          onClose={() => { setShowUpdateModal(false); setSelectedDisposisi(null); setCatatan(''); }}
-          title="Perbarui Status Disposisi"
-          size="md"
-        >
-          {selectedDisposisi && (
-            <div className="space-y-4">
-              <p className="text-sm text-gray-600">Nomor Surat: <span className="font-medium">{selectedDisposisi.nomorSurat}</span></p>
-              <label className="block text-sm font-medium text-gray-700">Catatan</label>
-              <textarea value={catatan} onChange={(e) => setCatatan(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
-                <Button variant="outline" onClick={() => { setShowUpdateModal(false); setSelectedDisposisi(null); setCatatan(''); }}>Batal</Button>
-                <Button variant="primary" onClick={() => handleUpdateStatus(SURAT_MASUK_STATUS.SELESAI)}>Selesai</Button>
-              </div>
+      {/* Update Disposisi Modal */}
+      <Modal
+        isOpen={showUpdateModal}
+        onClose={() => {
+          setShowUpdateModal(false);
+          setSelectedDisposisi(null);
+          setCatatan('');
+        }}
+        title="Perbarui Status Disposisi"
+        size="md"
+      >
+        {selectedDisposisi && (
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">
+              Nomor Surat: <span className="font-medium">{selectedDisposisi.nomorSurat}</span>
+            </p>
+            <label className="block text-sm font-medium text-gray-700">Catatan</label>
+            <textarea
+              value={catatan}
+              onChange={(e) => setCatatan(e.target.value)}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            />
+            <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowUpdateModal(false);
+                  setSelectedDisposisi(null);
+                  setCatatan('');
+                }}
+              >
+                Batal
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => handleUpdateStatus(SURAT_MASUK_STATUS.SELESAI)}
+              >
+                Selesai
+              </Button>
             </div>
-          )}
-        </Modal>
+          </div>
+        )}
+      </Modal>
 
-        {/* Tracking Modal */}
-        <TrackingModal
-          isOpen={showTrackingModal}
-          onClose={() => { setShowTrackingModal(false); setSelectedDisposisi(null); }}
-          surat={selectedDisposisi}
-        />
+      {/* Tracking Modal */}
+      <TrackingModal
+        isOpen={showTrackingModal}
+        onClose={() => {
+          setShowTrackingModal(false);
+          setSelectedDisposisi(null);
+        }}
+        surat={selectedDisposisi}
+      />
     </div>
   );
 };

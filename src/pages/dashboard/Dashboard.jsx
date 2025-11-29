@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Send, Clock, Archive } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
-import TrackingModal from "../../components/Features/TrackingModal.jsx";
+import TrackingModal from '../../components/Features/TrackingModal.jsx';
 import {
   SURAT_MASUK_STATUS,
   SURAT_MASUK_STATUS_LABELS,
@@ -42,7 +42,7 @@ const Dashboard = () => {
   return (
     <>
       {renderDashboard()}
-      
+
       {/* Tracking Modal */}
       <TrackingModal
         isOpen={showTrackingModal}
@@ -59,10 +59,38 @@ const Dashboard = () => {
 // Dashboard Sekretaris Kantor
 const DashboardSekretarisKantor = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Surat Masuk Baru', value: '18', icon: Mail, bgColor: 'bg-blue-500', path: '/surat-masuk' },
-    { id: 2, title: 'Surat Keluar Draft', value: '12', icon: Send, bgColor: 'bg-green-500', path: '/surat-keluar' },
-    { id: 3, title: 'Menunggu Disposisi', value: '8', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
-    { id: 4, title: 'Total Arsip Bulan Ini', value: '156', icon: Archive, bgColor: 'bg-purple-500', path: '/arsip' },
+    {
+      id: 1,
+      title: 'Surat Masuk Baru',
+      value: '18',
+      icon: Mail,
+      bgColor: 'bg-blue-500',
+      path: '/surat-masuk',
+    },
+    {
+      id: 2,
+      title: 'Surat Keluar Draft',
+      value: '12',
+      icon: Send,
+      bgColor: 'bg-green-500',
+      path: '/surat-keluar',
+    },
+    {
+      id: 3,
+      title: 'Menunggu Disposisi',
+      value: '8',
+      icon: Clock,
+      bgColor: 'bg-orange-500',
+      path: '/disposisi',
+    },
+    {
+      id: 4,
+      title: 'Total Arsip Bulan Ini',
+      value: '156',
+      icon: Archive,
+      bgColor: 'bg-purple-500',
+      path: '/arsip',
+    },
   ];
 
   const trackingSuratMasuk = [
@@ -73,7 +101,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
       title: 'Undangan Rapat Koordinasi Pendidikan',
       from: 'Dinas Pendidikan Provinsi',
-      posisi: 'Ketua Pengurus Yayasan'
+      posisi: 'Ketua Pengurus Yayasan',
     },
     {
       id: 2,
@@ -82,7 +110,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       status: SURAT_MASUK_STATUS.DIPROSES,
       title: 'Permohonan Data Keuangan Triwulan III',
       from: 'Kantor Wilayah Kementerian Agama',
-      posisi: 'Bendahara Pengurus'
+      posisi: 'Bendahara Pengurus',
     },
   ];
 
@@ -94,7 +122,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       status: SURAT_KELUAR_STATUS.REVIEW_KETUA,
       title: 'Surat Keterangan Aktif Pegawai - Rina Susanti',
       to: 'Bank BRI Cabang Jakarta Pusat',
-      posisi: 'Ketua Pengurus Yayasan'
+      posisi: 'Ketua Pengurus Yayasan',
     },
   ];
 
@@ -137,7 +165,10 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
           </h2>
           <div className="space-y-4">
             {trackingSuratMasuk.map((item) => (
-              <div key={item.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                key={item.id}
+                className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
@@ -145,7 +176,8 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       {(() => {
                         const statusKey = item.status;
                         const label = SURAT_MASUK_STATUS_LABELS[statusKey] || statusKey;
-                        const color = SURAT_MASUK_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
+                        const color =
+                          SURAT_MASUK_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
                         return (
                           <span className={`px-2 py-1 text-xs font-medium ${color} rounded`}>
                             {label}
@@ -181,7 +213,10 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
           </h2>
           <div className="space-y-4">
             {trackingSuratKeluar.map((item) => (
-              <div key={item.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                key={item.id}
+                className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
@@ -189,7 +224,8 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                       {(() => {
                         const statusKey = item.status;
                         const label = SURAT_KELUAR_STATUS_LABELS[statusKey] || statusKey;
-                        const color = SURAT_KELUAR_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
+                        const color =
+                          SURAT_KELUAR_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
                         return (
                           <span className={`px-2 py-1 text-xs font-medium ${color} rounded`}>
                             {label}
@@ -225,10 +261,38 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
 // Dashboard Ketua Pengurus
 const DashboardKetuaPengurus = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '6', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
-    { id: 2, title: 'Disposisi Selesai', value: '24', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
-    { id: 3, title: 'Menunggu Review', value: '6', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
-    { id: 4, title: 'Total Bulan Ini', value: '30', icon: Send, bgColor: 'bg-purple-500', path: '/arsip' },
+    {
+      id: 1,
+      title: 'Disposisi Masuk',
+      value: '6',
+      icon: Mail,
+      bgColor: 'bg-blue-500',
+      path: '/disposisi',
+    },
+    {
+      id: 2,
+      title: 'Disposisi Selesai',
+      value: '24',
+      icon: Archive,
+      bgColor: 'bg-green-500',
+      path: '/arsip',
+    },
+    {
+      id: 3,
+      title: 'Menunggu Review',
+      value: '6',
+      icon: Clock,
+      bgColor: 'bg-orange-500',
+      path: '/disposisi',
+    },
+    {
+      id: 4,
+      title: 'Total Bulan Ini',
+      value: '30',
+      icon: Send,
+      bgColor: 'bg-purple-500',
+      path: '/arsip',
+    },
   ];
 
   const menungguTindakan = [
@@ -239,7 +303,7 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
       badges: ['Surat Masuk', 'Urgent'],
       title: 'Undangan Rapat Koordinasi Pendidikan',
       from: 'Dinas Pendidikan Provinsi',
-      deadline: '12/10/2025'
+      deadline: '12/10/2025',
     },
     {
       id: 2,
@@ -248,7 +312,7 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
       badges: ['Surat Keluar', 'Menunggu'],
       title: 'Surat Keterangan Aktif Pegawai - Rina Susanti',
       to: 'Bank BRI Cabang Jakarta',
-      note: 'Untuk ditandatangani'
+      note: 'Untuk ditandatangani',
     },
   ];
 
@@ -292,12 +356,18 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="text-sm font-medium text-gray-900">{item.date}</span>
                     {item.badges.map((badge, idx) => (
-                      <span key={idx} className={`px-2 py-1 text-xs font-medium rounded ${
-                        badge === 'Urgent' ? 'bg-red-100 text-red-800' :
-                        badge === 'Surat Masuk' ? 'bg-blue-100 text-blue-800' :
-                        badge === 'Menunggu' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
+                      <span
+                        key={idx}
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          badge === 'Urgent'
+                            ? 'bg-red-100 text-red-800'
+                            : badge === 'Surat Masuk'
+                              ? 'bg-blue-100 text-blue-800'
+                              : badge === 'Menunggu'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-green-100 text-green-800'
+                        }`}
+                      >
                         {badge}
                       </span>
                     ))}
@@ -305,7 +375,9 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
                   <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
                   {item.from && <p className="text-sm text-gray-600">Dari: {item.from}</p>}
                   {item.to && <p className="text-sm text-gray-600">Kepada: {item.to}</p>}
-                  {item.deadline && <p className="text-sm text-gray-600">Diterima: {item.deadline}</p>}
+                  {item.deadline && (
+                    <p className="text-sm text-gray-600">Diterima: {item.deadline}</p>
+                  )}
                 </div>
                 <div className="flex gap-2 ml-4">
                   <button
@@ -330,10 +402,38 @@ const DashboardKetuaPengurus = ({ openTracking }) => {
 // Dashboard Sekretaris & Bendahara Pengurus
 const DashboardSekretarisBendahara = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '5', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
-    { id: 2, title: 'Menunggu Tidak Lanjut', value: '3', icon: Clock, bgColor: 'bg-orange-500', path: '/disposisi' },
-    { id: 3, title: 'Selesai Bulan Ini', value: '28', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
-    { id: 4, title: 'Perlu Review', value: '2', icon: Send, bgColor: 'bg-purple-500', path: '/disposisi' },
+    {
+      id: 1,
+      title: 'Disposisi Masuk',
+      value: '5',
+      icon: Mail,
+      bgColor: 'bg-blue-500',
+      path: '/disposisi',
+    },
+    {
+      id: 2,
+      title: 'Menunggu Tidak Lanjut',
+      value: '3',
+      icon: Clock,
+      bgColor: 'bg-orange-500',
+      path: '/disposisi',
+    },
+    {
+      id: 3,
+      title: 'Selesai Bulan Ini',
+      value: '28',
+      icon: Archive,
+      bgColor: 'bg-green-500',
+      path: '/arsip',
+    },
+    {
+      id: 4,
+      title: 'Perlu Review',
+      value: '2',
+      icon: Send,
+      bgColor: 'bg-purple-500',
+      path: '/disposisi',
+    },
   ];
 
   const disposisiKetua = [
@@ -343,7 +443,8 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
       badges: ['Disposisi Ketua'],
       title: 'Pengajuan Proposal Kegiatan Workshop',
       from: 'Lembaga Pengabdian Masyarakat',
-      instruksi: 'Mohon ditinjau kelayakan proposal dan berikan rekomendasi. Koordinasikan dengan Kepala Bagian PSDM.'
+      instruksi:
+        'Mohon ditinjau kelayakan proposal dan berikan rekomendasi. Koordinasikan dengan Kepala Bagian PSDM.',
     },
   ];
 
@@ -351,7 +452,9 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Sekretaris Pengurus Yayasan</h1>
-        <p className="text-gray-600 mt-1">Menindaklanjuti disposisi dan memberikan catatan administratif</p>
+        <p className="text-gray-600 mt-1">
+          Menindaklanjuti disposisi dan memberikan catatan administratif
+        </p>
       </div>
 
       {/* Stats */}
@@ -381,7 +484,10 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Disposisi dari Ketua Yayasan</h2>
         <div className="space-y-4">
           {disposisiKetua.map((item) => (
-            <div key={item.id} className="p-4 border-l-4 border-primary-600 bg-primary-50 rounded-r-lg">
+            <div
+              key={item.id}
+              className="p-4 border-l-4 border-primary-600 bg-primary-50 rounded-r-lg"
+            >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <div className="flex items-center space-x-2 mb-2">
@@ -393,7 +499,9 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
                   <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
                   <p className="text-sm text-gray-600 mb-3">Dari: {item.from}</p>
                   <div className="bg-white p-3 rounded-lg border border-primary-200">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Instruksi dari Ketua Yayasan:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                      Instruksi dari Ketua Yayasan:
+                    </p>
                     <p className="text-sm text-gray-600">"{item.instruksi}"</p>
                   </div>
                 </div>
@@ -420,10 +528,38 @@ const DashboardSekretarisBendahara = ({ openTracking }) => {
 // Dashboard Kepala Bagian
 const DashboardKepalaBagian = ({ openTracking }) => {
   const stats = [
-    { id: 1, title: 'Disposisi Masuk', value: '4', icon: Mail, bgColor: 'bg-blue-500', path: '/disposisi' },
-    { id: 2, title: 'Lampiran Pending', value: '2', icon: Clock, bgColor: 'bg-orange-500', path: '/surat-masuk' },
-    { id: 3, title: 'Selesai Bulan Ini', value: '22', icon: Archive, bgColor: 'bg-green-500', path: '/arsip' },
-    { id: 4, title: 'Dalam Proses', value: '2', icon: Send, bgColor: 'bg-purple-500', path: '/surat-keluar' },
+    {
+      id: 1,
+      title: 'Disposisi Masuk',
+      value: '4',
+      icon: Mail,
+      bgColor: 'bg-blue-500',
+      path: '/disposisi',
+    },
+    {
+      id: 2,
+      title: 'Lampiran Pending',
+      value: '2',
+      icon: Clock,
+      bgColor: 'bg-orange-500',
+      path: '/surat-masuk',
+    },
+    {
+      id: 3,
+      title: 'Selesai Bulan Ini',
+      value: '22',
+      icon: Archive,
+      bgColor: 'bg-green-500',
+      path: '/arsip',
+    },
+    {
+      id: 4,
+      title: 'Dalam Proses',
+      value: '2',
+      icon: Send,
+      bgColor: 'bg-purple-500',
+      path: '/surat-keluar',
+    },
   ];
 
   const disposisiPSDM = [
@@ -442,7 +578,9 @@ const DashboardKepalaBagian = ({ openTracking }) => {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Kepala Bagian PSDM</h1>
-        <p className="text-gray-600 mt-1">Mengelola disposisi terkait Personalia, Sumber Daya Manusia, dan Kesejahteraan</p>
+        <p className="text-gray-600 mt-1">
+          Mengelola disposisi terkait Personalia, Sumber Daya Manusia, dan Kesejahteraan
+        </p>
       </div>
 
       {/* Stats */}
@@ -469,7 +607,9 @@ const DashboardKepalaBagian = ({ openTracking }) => {
 
       {/* Disposisi PSDM */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Disposisi PSDM untuk Diselesaikan</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Disposisi PSDM untuk Diselesaikan
+        </h2>
         <div className="space-y-4">
           {disposisiPSDM.map((item) => (
             <div key={item.id} className="p-4 border border-gray-200 rounded-lg">
@@ -478,9 +618,14 @@ const DashboardKepalaBagian = ({ openTracking }) => {
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="text-sm font-medium text-gray-900">{item.date}</span>
                     {item.badges.map((badge, idx) => (
-                      <span key={idx} className={`px-2 py-1 text-xs font-medium rounded ${
-                        badge === 'Urgent' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
+                      <span
+                        key={idx}
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          badge === 'Urgent'
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-blue-100 text-blue-800'
+                        }`}
+                      >
                         {badge}
                       </span>
                     ))}
@@ -488,15 +633,21 @@ const DashboardKepalaBagian = ({ openTracking }) => {
                   <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
                   <p className="text-sm text-gray-600 mb-3">Dari: {item.from}</p>
                   <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-3">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Instruksi dari Sekretaris Pengurus:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-1">
+                      Instruksi dari Sekretaris Pengurus:
+                    </p>
                     <p className="text-sm text-gray-600">"{item.instruksi}"</p>
                   </div>
                   {item.lampiran && (
                     <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Lampiran yang dibutuhkan:</p>
+                      <p className="text-sm font-medium text-gray-700 mb-2">
+                        Lampiran yang dibutuhkan:
+                      </p>
                       <ul className="list-disc list-inside space-y-1">
                         {item.lampiran.map((lamp, idx) => (
-                          <li key={idx} className="text-sm text-gray-600">{lamp}</li>
+                          <li key={idx} className="text-sm text-gray-600">
+                            {lamp}
+                          </li>
                         ))}
                       </ul>
                     </div>

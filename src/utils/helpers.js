@@ -2,10 +2,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import {
-  SURAT_MASUK_STATUS_COLORS,
-  SURAT_KELUAR_STATUS_COLORS,
-} from './constants';
+import { SURAT_MASUK_STATUS_COLORS, SURAT_KELUAR_STATUS_COLORS } from './constants';
 
 // Merge Tailwind classes
 export function cn(...inputs) {
