@@ -6,6 +6,7 @@ import Badge from '../../components/common/Badge/Badge';
 import useDisposisiStore from '../../store/disposisiStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
 import toast from 'react-hot-toast';
+import { SURAT_MASUK_STATUS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
 
 const DisposisiList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,7 +63,7 @@ const DisposisiList = () => {
       kepada: 'Ketua Yayasan',
       perihal: 'Undangan Rapat Koordinasi Pendidikan',
       tenggatWaktu: '16/10/2025',
-      status: 'selesai',
+      status: SURAT_MASUK_STATUS.SELESAI,
       aksi: 'Lanjut',
     },
     {
@@ -72,7 +73,7 @@ const DisposisiList = () => {
       kepada: 'Bendahara',
       perihal: 'Pemberian/huan Pencairan Dana Bantuan',
       tenggatWaktu: '20/10/2025',
-      status: 'menunggu',
+      status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
       aksi: 'Lanjut',
     },
     {
@@ -82,7 +83,7 @@ const DisposisiList = () => {
       kepada: 'Sekretaris Yayasan',
       perihal: 'Verifikasi Data Kepegawaian',
       tenggatWaktu: '18/10/2025',
-      status: 'diproses',
+      status: SURAT_MASUK_STATUS.DIPROSES,
       aksi: 'Lanjut',
     },
   ];
@@ -166,8 +167,7 @@ const DisposisiList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={disposisi.status}>
-                      {disposisi.status === 'selesai' ? 'Selesai' :
-                       disposisi.status === 'menunggu' ? 'Menunggu Dibalas' : 'Dalam Proses'}
+                      {SURAT_MASUK_STATUS_LABELS[disposisi.status] || 'Status'}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -200,7 +200,7 @@ const DisposisiList = () => {
               <textarea value={catatan} onChange={(e) => setCatatan(e.target.value)} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-lg" />
               <div className="flex justify-end gap-2 pt-4 border-t border-gray-200">
                 <Button variant="outline" onClick={() => { setShowUpdateModal(false); setSelectedDisposisi(null); setCatatan(''); }}>Batal</Button>
-                <Button variant="primary" onClick={() => handleUpdateStatus('selesai')}>Selesai</Button>
+                <Button variant="primary" onClick={() => handleUpdateStatus(SURAT_MASUK_STATUS.SELESAI)}>Selesai</Button>
               </div>
             </div>
           )}
