@@ -1,20 +1,21 @@
 import { cn } from '../../../utils/helpers';
+import {
+  SURAT_MASUK_STATUS_COLORS,
+  SURAT_KELUAR_STATUS_COLORS,
+  PRIORITAS_COLORS,
+} from '../../../utils/constants';
 
 const Badge = ({ children, variant = 'default', className }) => {
   const variants = {
     default: 'bg-gray-100 text-gray-800',
     baru: 'bg-blue-100 text-blue-800',
-    diproses: 'bg-yellow-100 text-yellow-800',
-    selesai: 'bg-green-100 text-green-800',
     ditolak: 'bg-red-100 text-red-800',
-    urgent: 'bg-red-100 text-red-800',
-    sedang: 'bg-blue-100 text-blue-800',
-    tinggi: 'bg-orange-100 text-orange-800',
-    rendah: 'bg-gray-100 text-gray-800',
-    // Untuk Surat Keluar
-    menunggu: 'bg-yellow-100 text-yellow-800',
-    draft: 'bg-gray-100 text-gray-800',
-    kirim: 'bg-green-100 text-green-800',
+    // prioritas (rendah/sedang/tinggi/urgent)
+    ...PRIORITAS_COLORS,
+    // surat masuk statuses
+    ...SURAT_MASUK_STATUS_COLORS,
+    // surat keluar statuses
+    ...SURAT_KELUAR_STATUS_COLORS,
   };
 
   return (
