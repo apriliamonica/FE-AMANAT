@@ -1,28 +1,54 @@
-// Status Surat
-export const SURAT_STATUS = {
-  BARU: 'baru',
+// Status Surat Masuk (6 tahap)
+export const SURAT_MASUK_STATUS = {
+  DITERIMA: 'diterima',
   DIPROSES: 'diproses',
+  DISPOSISI_KETUA: 'disposisi_ketua',
+  DISPOSISI_SEKRETARIS_PENGURUS: 'disposisi_sekretaris_pengurus',
+  DISPOSISI_KABAG: 'disposisi_kabag',
   SELESAI: 'selesai',
-  DITOLAK: 'ditolak',
-  PENDING: 'pending',
 };
 
-// Status Surat Labels
-export const SURAT_STATUS_LABELS = {
-  [SURAT_STATUS.BARU]: 'Baru',
-  [SURAT_STATUS.DIPROSES]: 'Diproses',
-  [SURAT_STATUS.SELESAI]: 'Selesai',
-  [SURAT_STATUS.DITOLAK]: 'Ditolak',
-  [SURAT_STATUS.PENDING]: 'Pending',
+export const SURAT_MASUK_STATUS_LABELS = {
+  [SURAT_MASUK_STATUS.DITERIMA]: 'Diterima',
+  [SURAT_MASUK_STATUS.DIPROSES]: 'Diproses',
+  [SURAT_MASUK_STATUS.DISPOSISI_KETUA]: 'Disposisi Ketua',
+  [SURAT_MASUK_STATUS.DISPOSISI_SEKRETARIS_PENGURUS]: 'Disposisi Sekretaris Pengurus',
+  [SURAT_MASUK_STATUS.DISPOSISI_KABAG]: 'Disposisi Kabag',
+  [SURAT_MASUK_STATUS.SELESAI]: 'Selesai',
 };
 
-// Status Surat Colors (Tailwind)
-export const SURAT_STATUS_COLORS = {
-  [SURAT_STATUS.BARU]: 'bg-blue-100 text-blue-800',
-  [SURAT_STATUS.DIPROSES]: 'bg-yellow-100 text-yellow-800',
-  [SURAT_STATUS.SELESAI]: 'bg-green-100 text-green-800',
-  [SURAT_STATUS.DITOLAK]: 'bg-red-100 text-red-800',
-  [SURAT_STATUS.PENDING]: 'bg-gray-100 text-gray-800',
+export const SURAT_MASUK_STATUS_COLORS = {
+  [SURAT_MASUK_STATUS.DITERIMA]: 'bg-blue-100 text-blue-800',
+  [SURAT_MASUK_STATUS.DIPROSES]: 'bg-yellow-100 text-yellow-800',
+  [SURAT_MASUK_STATUS.DISPOSISI_KETUA]: 'bg-orange-100 text-orange-800',
+  [SURAT_MASUK_STATUS.DISPOSISI_SEKRETARIS_PENGURUS]: 'bg-indigo-100 text-indigo-800',
+  [SURAT_MASUK_STATUS.DISPOSISI_KABAG]: 'bg-purple-100 text-purple-800',
+  [SURAT_MASUK_STATUS.SELESAI]: 'bg-green-100 text-green-800',
+};
+
+// Status Surat Keluar (5 tahap)
+export const SURAT_KELUAR_STATUS = {
+  DRAFT: 'draft',
+  REVIEW_SEKRETARIS_PENGURUS: 'review_sekretaris_pengurus',
+  LAMPIRAN_KABAG: 'lampiran_kabag',
+  REVIEW_KETUA: 'review_ketua',
+  TERKIRIM: 'terkirim',
+};
+
+export const SURAT_KELUAR_STATUS_LABELS = {
+  [SURAT_KELUAR_STATUS.DRAFT]: 'Draft',
+  [SURAT_KELUAR_STATUS.REVIEW_SEKRETARIS_PENGURUS]: 'Review Sekretaris Pengurus',
+  [SURAT_KELUAR_STATUS.LAMPIRAN_KABAG]: 'Lampiran Kabag',
+  [SURAT_KELUAR_STATUS.REVIEW_KETUA]: 'Review Ketua',
+  [SURAT_KELUAR_STATUS.TERKIRIM]: 'Terkirim',
+};
+
+export const SURAT_KELUAR_STATUS_COLORS = {
+  [SURAT_KELUAR_STATUS.DRAFT]: 'bg-gray-100 text-gray-800',
+  [SURAT_KELUAR_STATUS.REVIEW_SEKRETARIS_PENGURUS]: 'bg-yellow-100 text-yellow-800',
+  [SURAT_KELUAR_STATUS.LAMPIRAN_KABAG]: 'bg-indigo-100 text-indigo-800',
+  [SURAT_KELUAR_STATUS.REVIEW_KETUA]: 'bg-orange-100 text-orange-800',
+  [SURAT_KELUAR_STATUS.TERKIRIM]: 'bg-green-100 text-green-800',
 };
 
 // Jenis Surat
