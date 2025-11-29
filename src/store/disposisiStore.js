@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
+import { SURAT_MASUK_STATUS } from '../utils/constants';
 
 const useDisposisiStore = create((set, get) => ({
   // State
@@ -13,7 +14,7 @@ const useDisposisiStore = create((set, get) => ({
     set({ isLoading: true });
     try {
       // Mock data
-      const mockData = [
+        const mockData = [
         {
           id: 1,
           nomorSurat: '001/SM/V/2025',
@@ -22,7 +23,7 @@ const useDisposisiStore = create((set, get) => ({
           perihal: 'Undangan Rapat Koordinasi Pendidikan',
           instruksi: 'Mohon ditinjau dan diberikan disposisi',
           tenggatWaktu: '2025-10-16',
-          status: 'selesai',
+          status: SURAT_MASUK_STATUS.SELESAI,
           tanggalDisposisi: '2025-10-10',
           catatan: null,
         },
@@ -34,7 +35,7 @@ const useDisposisiStore = create((set, get) => ({
           perihal: 'Permohonan Pencairan Dana Bantuan',
           instruksi: 'Mohon diverifikasi data keuangan',
           tenggatWaktu: '2025-10-20',
-          status: 'menunggu',
+          status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
           tanggalDisposisi: '2025-10-09',
           catatan: null,
         },
@@ -55,7 +56,7 @@ const useDisposisiStore = create((set, get) => ({
       const newDisposisi = {
         id: Date.now(),
         ...data,
-        status: 'menunggu',
+        status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
         tanggalDisposisi: new Date().toISOString().split('T')[0],
       };
 
@@ -109,28 +110,28 @@ const useDisposisiStore = create((set, get) => ({
         {
           id: 1,
           tanggal: '2025-10-10 08:30',
-          status: 'Diterima',
+          status: SURAT_MASUK_STATUS.DITERIMA,
           oleh: 'Sekretaris Kantor',
           keterangan: 'Surat masuk diterima dan dicatat',
         },
         {
           id: 2,
           tanggal: '2025-10-10 09:15',
-          status: 'Disposisi',
+          status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
           oleh: 'Sekretaris Kantor',
           keterangan: 'Disposisi ke Ketua Pengurus Yayasan',
         },
         {
           id: 3,
           tanggal: '2025-10-10 14:30',
-          status: 'Review',
+          status: SURAT_MASUK_STATUS.DIPROSES,
           oleh: 'Ketua Pengurus Yayasan',
           keterangan: 'Sedang ditinjau oleh Ketua Pengurus',
         },
         {
           id: 4,
           tanggal: '2025-10-11 10:00',
-          status: 'Disposisi Lanjutan',
+          status: SURAT_MASUK_STATUS.DISPOSISI_SEKRETARIS_PENGURUS,
           oleh: 'Ketua Pengurus Yayasan',
           keterangan: 'Disposisi ke Sekretaris Pengurus untuk tindak lanjut',
         },
