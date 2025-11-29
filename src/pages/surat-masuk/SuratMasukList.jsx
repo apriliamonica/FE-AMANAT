@@ -6,7 +6,7 @@ import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import { formatDate } from '../../utils/helpers';
 import useAuthStore from '../../store/authStore';
-import { PRIORITAS_LABELS, JENIS_SURAT_LABELS, SURAT_STATUS_LABELS } from '../../utils/constants';
+import { PRIORITAS_LABELS, JENIS_SURAT_LABELS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
 
 const SuratMasukList = () => {
   const {
@@ -233,7 +233,7 @@ const SuratMasukList = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge variant={surat.status}>
-                        {SURAT_STATUS_LABELS[surat.status] || surat.status}
+                        {SURAT_MASUK_STATUS_LABELS[surat.status] || surat.status}
                       </Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
