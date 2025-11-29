@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import { Mail, Send, Clock, Archive } from 'lucide-react';
 import useAuthStore from '../../store/authStore';
 import TrackingModal from "../../components/Features/TrackingModal.jsx";
+import {
+  SURAT_MASUK_STATUS,
+  SURAT_MASUK_STATUS_LABELS,
+  SURAT_MASUK_STATUS_COLORS,
+  SURAT_KELUAR_STATUS,
+  SURAT_KELUAR_STATUS_LABELS,
+  SURAT_KELUAR_STATUS_COLORS,
+} from '../../utils/constants';
 
 const Dashboard = () => {
   const { user } = useAuthStore();
@@ -62,7 +70,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       id: 1,
       nomorSurat: '001/SM/V/2025',
       date: '001/SM/V/2025',
-      status: 'Menunggu Disposisi Ketua',
+      status: SURAT_MASUK_STATUS.DISPOSISI_KETUA,
       title: 'Undangan Rapat Koordinasi Pendidikan',
       from: 'Dinas Pendidikan Provinsi',
       posisi: 'Ketua Pengurus Yayasan'
@@ -71,7 +79,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       id: 2,
       nomorSurat: '002/SM/V/2025',
       date: '002/SM/V/2025',
-      status: 'Dalam Proses',
+      status: SURAT_MASUK_STATUS.DIPROSES,
       title: 'Permohonan Data Keuangan Triwulan III',
       from: 'Kantor Wilayah Kementerian Agama',
       posisi: 'Bendahara Pengurus'
@@ -83,8 +91,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
       id: 1,
       nomorSurat: '04/SK/V/2025',
       date: '04/SK/V/2025',
-      status: 'Menunggu TTD Ketua',
-      statusColor: 'bg-green-100 text-green-800',
+      status: SURAT_KELUAR_STATUS.REVIEW_KETUA,
       title: 'Surat Keterangan Aktif Pegawai - Rina Susanti',
       to: 'Bank BRI Cabang Jakarta Pusat',
       posisi: 'Ketua Pengurus Yayasan'
@@ -135,9 +142,16 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="text-sm font-medium text-gray-900">{item.date}</span>
-                      <span className="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded">
-                        {item.status}
-                      </span>
+                      {(() => {
+                        const statusKey = item.status;
+                        const label = SURAT_MASUK_STATUS_LABELS[statusKey] || statusKey;
+                        const color = SURAT_MASUK_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
+                        return (
+                          <span className={`px-2 py-1 text-xs font-medium ${color} rounded`}>
+                            {label}
+                          </span>
+                        );
+                      })()}
                     </div>
                     <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
                     <p className="text-sm text-gray-600 mb-2">Dari: {item.from}</p>
@@ -172,9 +186,16 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="text-sm font-medium text-gray-900">{item.date}</span>
-                      <span className={`px-2 py-1 text-xs font-medium ${item.statusColor} rounded`}>
-                        {item.status}
-                      </span>
+                      {(() => {
+                        const statusKey = item.status;
+                        const label = SURAT_KELUAR_STATUS_LABELS[statusKey] || statusKey;
+                        const color = SURAT_KELUAR_STATUS_COLORS[statusKey] || 'bg-yellow-100 text-yellow-800';
+                        return (
+                          <span className={`px-2 py-1 text-xs font-medium ${color} rounded`}>
+                            {label}
+                          </span>
+                        );
+                      })()}
                     </div>
                     <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
                     <p className="text-sm text-gray-600 mb-2">Kepada: {item.to}</p>
