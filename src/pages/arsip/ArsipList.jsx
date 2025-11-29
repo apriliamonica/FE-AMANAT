@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Search, Eye, Download, Mail, Send, Archive } from 'lucide-react';
 import Badge from '../../components/common/Badge/Badge';
+import { SURAT_MASUK_STATUS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
 import Modal from '../../components/common/Modal/Modal';
 
 const ArsipList = () => {
@@ -207,11 +208,7 @@ const ArsipList = () => {
                     {arsip.nomorSurat}
                   </td>
                   <td className='px-6 py-4 whitespace-nowrap'>
-                    <Badge
-                      variant={
-                        arsip.jenis === 'Surat Masuk' ? 'baru' : 'selesai'
-                      }
-                    >
+                    <Badge variant={SURAT_MASUK_STATUS.SELESAI}>
                       {arsip.jenis}
                     </Badge>
                   </td>
