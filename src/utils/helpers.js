@@ -2,6 +2,10 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import {
+  SURAT_MASUK_STATUS_COLORS,
+  SURAT_KELUAR_STATUS_COLORS,
+} from './constants';
 
 // Merge Tailwind classes
 export function cn(...inputs) {
@@ -115,6 +119,13 @@ export function getInitials(name) {
 
 // Get status badge color
 export function getStatusColor(status) {
+  if (!status) return 'bg-gray-100 text-gray-800';
+
+  // Prefer explicit mappings from constants
+  if (SURAT_MASUK_STATUS_COLORS[status]) return SURAT_MASUK_STATUS_COLORS[status];
+  if (SURAT_KELUAR_STATUS_COLORS[status]) return SURAT_KELUAR_STATUS_COLORS[status];
+
+  // Fallback generic set
   const colors = {
     baru: 'bg-blue-100 text-blue-800',
     diproses: 'bg-yellow-100 text-yellow-800',
