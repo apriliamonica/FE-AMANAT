@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, Filter, Plus, Eye, Send, Trash2 } from 'lucide-react';
+import { SURAT_KELUAR_STATUS, SURAT_KELUAR_STATUS_LABELS } from '../../utils/constants';
 import Button from '../../components/common/Button';
 import Modal from '../../components/common/Modal/Modal';
 import Badge from '../../components/common/Badge/Badge';
@@ -62,7 +63,7 @@ const SuratKeluarList = () => {
       tanggal: '10/10/2025',
       perihal: 'Permohonan Data Kesehatan',
       kategori: 'Permohonan',
-      status: 'kirim',
+      status: SURAT_KELUAR_STATUS.TERKIRIM,
     },
     {
       id: 2,
@@ -71,7 +72,7 @@ const SuratKeluarList = () => {
       tanggal: '11/10/2025',
       perihal: 'Surat Keterangan Aktif Pegawai',
       kategori: 'Keterangan',
-      status: 'menunggu',
+      status: SURAT_KELUAR_STATUS.REVIEW_SEKRETARIS_PENGURUS,
     },
     {
       id: 3,
@@ -80,7 +81,7 @@ const SuratKeluarList = () => {
       tanggal: '9/10/2025',
       perihal: 'Proposal Kerja Sama Pendidikan',
       kategori: 'Proposal',
-      status: 'draft',
+      status: SURAT_KELUAR_STATUS.DRAFT,
     },
     {
       id: 4,
@@ -89,7 +90,7 @@ const SuratKeluarList = () => {
       tanggal: '12/10/2025',
       perihal: 'Undangan Seminar Nasional',
       kategori: 'Undangan',
-      status: 'kirim',
+      status: SURAT_KELUAR_STATUS.TERKIRIM,
     },
   ];
 
@@ -235,8 +236,7 @@ const SuratKeluarList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={surat.status}>
-                      {surat.status === 'kirim' ? 'Terkirim' : 
-                       surat.status === 'menunggu' ? 'Menunggu TTD' : 'Draft'}
+                      {SURAT_KELUAR_STATUS_LABELS[surat.status] || surat.status}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -244,7 +244,7 @@ const SuratKeluarList = () => {
                       <button onClick={() => handleOpenView(surat)} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat">
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
-                      {surat.status === 'draft' && (
+                      {surat.status === SURAT_KELUAR_STATUS.DRAFT && (
                         <button onClick={() => handleSend(surat.id)} className="p-1.5 hover:bg-green-50 rounded-lg transition-colors" title="Kirim" disabled={isLoading}>
                           <Send className="w-4 h-4 text-green-600" />
                         </button>
