@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
 import { suratService } from '../services/suratService';
+import { SURAT_MASUK_STATUS, SURAT_KELUAR_STATUS } from '../utils/constants';
 
 const useSuratStore = create((set, get) => ({
   // State
@@ -35,7 +36,7 @@ const useSuratStore = create((set, get) => ({
             tanggalTerima: '2025-10-10',
             perihal: 'Undangan Rapat Koordinasi Pendidikan',
             prioritas: 'urgent',
-            status: 'baru',
+            status: SURAT_MASUK_STATUS.DITERIMA,
             kategori: 'undangan',
             file: null,
           },
@@ -47,7 +48,7 @@ const useSuratStore = create((set, get) => ({
             tanggalTerima: '2025-10-09',
             perihal: 'Permohonan Data Keuangan',
             prioritas: 'tinggi',
-            status: 'diproses',
+            status: SURAT_MASUK_STATUS.DIPROSES,
             kategori: 'permohonan',
             file: null,
           },
@@ -85,7 +86,7 @@ const useSuratStore = create((set, get) => ({
         const newSurat = {
           id: Date.now(),
           ...data,
-          status: 'baru',
+          status: SURAT_MASUK_STATUS.DITERIMA,
           tanggal: data.tanggalTerima || data.tanggal,
         };
 
@@ -187,7 +188,7 @@ const useSuratStore = create((set, get) => ({
           tanggal: '2025-10-10',
           perihal: 'Permohonan Data Kesehatan',
           kategori: 'permohonan',
-          status: 'kirim',
+          status: SURAT_KELUAR_STATUS.TERKIRIM,
         },
         {
           id: 2,
@@ -196,7 +197,7 @@ const useSuratStore = create((set, get) => ({
           tanggal: '2025-10-11',
           perihal: 'Surat Keterangan Aktif Pegawai',
           kategori: 'keterangan',
-          status: 'menunggu',
+          status: SURAT_KELUAR_STATUS.REVIEW_SEKRETARIS_PENGURUS,
         },
       ];
 
@@ -214,7 +215,7 @@ const useSuratStore = create((set, get) => ({
       const newSurat = {
         id: Date.now(),
         ...data,
-        status: 'draft',
+        status: SURAT_KELUAR_STATUS.DRAFT,
         tanggal: data.tanggalSurat,
         tujuan: data.tujuanSurat,
       };
@@ -238,7 +239,7 @@ const useSuratStore = create((set, get) => ({
     try {
       set((state) => ({
         suratKeluar: state.suratKeluar.map((surat) =>
-          surat.id === id ? { ...surat, status: 'kirim' } : surat
+          surat.id === id ? { ...surat, status: SURAT_KELUAR_STATUS.TERKIRIM } : surat
         ),
         isLoading: false,
       }));
