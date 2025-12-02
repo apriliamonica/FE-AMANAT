@@ -82,7 +82,7 @@ const DetailTab = ({ surat }) => (
   </div>
 );
 
-// --- 2. TRACKING TAB ---
+// --- 2. TRACKING TAB --- ganti DISPOSISI TAB
 const TrackingTab = ({ surat }) => {
   const { trackingHistory, fetchTrackingHistory, isLoading } = useDisposisiStore();
 
@@ -167,18 +167,18 @@ const TrackingTab = ({ surat }) => {
   );
 };
 
-// --- 3. DISPOSISI TAB (Mock-up) ---
-const DisposisiTab = ({ surat }) => (
-  <div className="pt-2 min-h-[350px]">
-    {' '}
-    {/* Diberi tinggi minimum */}
-    <h4 className="font-semibold text-gray-900 mb-4">Disposisi & Tindak Lanjut</h4>
-    <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg h-full flex flex-col justify-center items-center">
-      <Clock className="w-8 h-8 mx-auto mb-3 text-gray-400" />
-      <p>Konten Form Disposisi atau Riwayat Disposisi akan ditempatkan di sini.</p>
-    </div>
-  </div>
-);
+// // --- 3. DISPOSISI TAB (Mock-up) ---
+// const DisposisiTab = ({ surat }) => (
+//   <div className="pt-2 min-h-[350px]">
+//     {' '}
+//     {/* Diberi tinggi minimum */}
+//     <h4 className="font-semibold text-gray-900 mb-4">Disposisi & Tindak Lanjut</h4>
+//     <div className="text-center py-8 text-gray-500 border border-dashed rounded-lg h-full flex flex-col justify-center items-center">
+//       <Clock className="w-8 h-8 mx-auto mb-3 text-gray-400" />
+//       <p>Konten Form Disposisi atau Riwayat Disposisi akan ditempatkan di sini.</p>
+//     </div>
+//   </div>
+// );
 
 // --- 4. LAMPIRAN TAB (Functional) ---
 const LampiranTab = ({ surat }) => {
@@ -373,8 +373,7 @@ const MailDetailModal = ({ isOpen, onClose, surat }) => {
 
   const tabs = [
     { name: 'Detail', component: DetailTab },
-    { name: 'Tracking', component: TrackingTab },
-    { name: 'Disposisi', component: DisposisiTab },
+    { name: 'Disposisi', component: TrackingTab },
     { name: 'Lampiran', component: LampiranTab },
   ];
 
