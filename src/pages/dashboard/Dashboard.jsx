@@ -61,7 +61,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
   const stats = [
     {
       id: 1,
-      title: 'Surat Masuk Baru',
+      title: 'Surat Masuk Hari ini',
       value: '18',
       icon: Mail,
       bgColor: 'bg-blue-500',
@@ -69,7 +69,7 @@ const DashboardSekretarisKantor = ({ openTracking }) => {
     },
     {
       id: 2,
-      title: 'Surat Keluar Draft',
+      title: 'Surat Keluar Hari ini',
       value: '12',
       icon: Send,
       bgColor: 'bg-green-500',
