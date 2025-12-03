@@ -518,10 +518,10 @@ const SuratMasukList = () => {
             </select>
           </div>
 
-          {/* Instruksi/Catatan */}
+          {/* Catatan */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Instruksi/Catatan <span className="text-red-500">*</span>
+              Catatan <span className="text-red-500">*</span>
             </label>
             <textarea
               name="instruksi"
