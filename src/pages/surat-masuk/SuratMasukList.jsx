@@ -534,31 +534,6 @@ const SuratMasukList = () => {
             />
           </div>
 
-          {/* Tenggat Waktu */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tenggat Waktu</label>
-            <input
-              type="date"
-              name="tenggat"
-              value={disposisiData.tenggat}
-              onChange={handleDisposisiChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-
-          {/* Lampiran Tambahan */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Lampiran Tambahan
-            </label>
-            <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={handleDisposisiFileChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <Button
