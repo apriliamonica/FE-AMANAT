@@ -509,12 +509,12 @@ const SuratMasukList = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option value="">Pilih penerima disposisi</option>
-              <option value="ketua">Ketua</option>
-              <option value="wakil_ketua">Wakil Ketua</option>
-              <option value="sekretaris">Sekretaris</option>
-              <option value="bendahara">Bendahara</option>
-              <option value="koordinator_bidang">Koordinator Bidang</option>
-              <option value="anggota">Anggota</option>
+              <option value="ketua">Ketua Yayasan</option>
+              <option value="sekretaris">Sekretaris Yayasan</option>
+              <option value="bendahara">Bendahara Yayasan</option>
+              <option value="koordinator_bidang">Kabag Umum</option>
+              <option value="koordinator_bidang">Kabag Keuangan</option>
+              <option value="koordinator_bidang">Kabag PSDM</option>
             </select>
           </div>
 
