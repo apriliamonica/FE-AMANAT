@@ -202,13 +202,10 @@ const SuratMasukList = () => {
                     Asal Surat
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tanggal
+                    Tanggal Diterima
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Perihal
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Prioritas
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -231,11 +228,6 @@ const SuratMasukList = () => {
                       {formatDate(surat.tanggal || surat.tanggalTerima, 'dd/MM/yyyy')}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant={surat.prioritas}>
-                        {PRIORITAS_LABELS[surat.prioritas] || surat.prioritas}
-                      </Badge>
-                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Badge variant={surat.status}>
                         {SURAT_MASUK_STATUS_LABELS[surat.status] || surat.status}
