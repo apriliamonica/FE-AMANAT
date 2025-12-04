@@ -12,6 +12,7 @@ const SuratKeluarList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showDisposisiModal, setShowDisposisiModal] = useState(false);
   const [selectedSuratId, setSelectedSuratId] = useState(null);
   const [selectedSurat, setSelectedSurat] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -24,6 +25,13 @@ const SuratKeluarList = () => {
     kategori: '',
     fileSurat: null,
     lampiran: null,
+  });
+  const [disposisiData, setDisposisiData] = useState({
+    kepada: '',
+    instruksi: '',
+    tenggat: '',
+    catatan: '',
+    file: null,
   });
 
   const {
@@ -95,6 +103,16 @@ const SuratKeluarList = () => {
     },
   ];
 
+  const resetDisposisiForm = () => {
+    setDisposisiData({
+      kepada: '',
+      instruksi: '',
+      tenggat: '',
+      catatan: '',
+      file: null,
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -126,6 +144,40 @@ const SuratKeluarList = () => {
     setShowViewModal(true);
   };
 
+  const handleOpenDisposisi = (surat) => {
+    setSelectedSurat(surat);
+    resetDisposisiForm();
+    setShowDisposisiModal(true);
+  };
+
+  const handleDisposisiSubmit = async (e) => {
+    e.preventDefault();
+
+    // Data disposisi siap dikirim ke backend
+    const disposisiPayload = {
+      suratId: selectedSurat.id,
+      nomorSurat: selectedSurat.nomorSurat,
+      kepada: disposisiData.kepada,
+      instruksi: disposisiData.instruksi,
+      tenggat: disposisiData.tenggat,
+      catatan: disposisiData.catatan,
+      file: disposisiData.file,
+      tanggalDisposisi: new Date().toISOString(),
+      jenisSurat: 'keluar',
+    };
+
+    console.log('Disposisi Data:', disposisiPayload);
+
+    // Simulasi sukses - ganti dengan API call yang sebenarnya
+    // const result = await createDisposisi(disposisiPayload);
+    // if (result.success) {
+    toast.success('Disposisi berhasil dikirim!');
+    setShowDisposisiModal(false);
+    resetDisposisiForm();
+    fetchSuratKeluar();
+    // }
+  };
+
   const handleSend = async (id) => {
     try {
       const res = await sendSuratKeluar(id);
@@ -146,6 +198,15 @@ const SuratKeluarList = () => {
   const handleFileChange = (e) => {
     const { name } = e.target;
     setFormData((prev) => ({ ...prev, [name]: e.target.files[0] }));
+  };
+
+  const handleDisposisiChange = (e) => {
+    const { name, value } = e.target;
+    setDisposisiData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDisposisiFileChange = (e) => {
+    setDisposisiData((prev) => ({ ...prev, file: e.target.files[0] }));
   };
 
   return (
@@ -247,16 +308,13 @@ const SuratKeluarList = () => {
                       >
                         <Eye className="w-4 h-4 text-gray-600" />
                       </button>
-                      {surat.status === SURAT_KELUAR_STATUS.DRAFT && (
-                        <button
-                          onClick={() => handleSend(surat.id)}
-                          className="p-1.5 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Kirim"
-                          disabled={isLoading}
-                        >
-                          <Send className="w-4 h-4 text-green-600" />
-                        </button>
-                      )}
+                      <button
+                        onClick={() => handleOpenDisposisi(surat)}
+                        className="p-1.5 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Buat Disposisi"
+                      >
+                        <Send className="w-4 h-4 text-blue-600" />
+                      </button>
                       <button
                         onClick={() => {
                           setSelectedSuratId(surat.id);
@@ -436,6 +494,114 @@ const SuratKeluarList = () => {
         </form>
       </Modal>
 
+      {/* Modal Buat Lembar Disposisi */}
+      <Modal
+        isOpen={showDisposisiModal}
+        onClose={() => {
+          setShowDisposisiModal(false);
+          resetDisposisiForm();
+        }}
+        title="Buat Lembar Disposisi"
+        size="lg"
+      >
+        <form onSubmit={handleDisposisiSubmit} className="space-y-4">
+          <p className="text-sm text-gray-600 mb-4">
+            Disposisikan surat kepada pejabat yang berwenang
+          </p>
+
+          {/* Nomor Surat */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nomor Surat</label>
+            <input
+              type="text"
+              value={selectedSurat?.nomorSurat || ''}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
+            />
+          </div>
+
+          {/* Kepada */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Kepada <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="kepada"
+              value={disposisiData.kepada}
+              onChange={handleDisposisiChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+            >
+              <option value="">Pilih penerima disposisi</option>
+              <option value="ketua">Ketua Yayasan</option>
+              <option value="sekretaris">Sekretaris Yayasan</option>
+              <option value="bendahara">Bendahara Yayasan</option>
+              <option value="koordinator_bidang">Kabag Umum</option>
+              <option value="koordinator_bidang">Kabag Keuangan</option>
+              <option value="koordinator_bidang">Kabag PSDM</option>
+            </select>
+          </div>
+
+          {/* Instruksi/Catatan */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Instruksi/Catatan <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              name="instruksi"
+              value={disposisiData.instruksi}
+              onChange={handleDisposisiChange}
+              placeholder="Tuliskan instruksi atau catatan disposisi"
+              required
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
+            />
+          </div>
+
+          {/* Tenggat Waktu */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tenggat Waktu</label>
+            <input
+              type="date"
+              name="tenggat"
+              value={disposisiData.tenggat}
+              onChange={handleDisposisiChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+            />
+          </div>
+
+          {/* Lampiran Tambahan */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Lampiran Tambahan
+            </label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleDisposisiFileChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setShowDisposisiModal(false);
+                resetDisposisiForm();
+              }}
+            >
+              Batal
+            </Button>
+            <Button type="submit" variant="primary" disabled={isLoading}>
+              {isLoading ? 'Mengirim...' : 'Kirim Disposisi'}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
       {/* Modal View Surat Keluar */}
       <Modal
         isOpen={showViewModal}
@@ -534,5 +700,3 @@ const SuratKeluarList = () => {
 };
 
 export default SuratKeluarList;
-
-// Lokasi: src/pages/surat-keluar/SuratKeluarList.jsx
