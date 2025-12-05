@@ -16,7 +16,7 @@ import {
 } from 'recharts';
 
 const LaporanPage = () => {
-  const [jenisLaporan, setJenisLaporan] = useState('Bulanan');
+  const [jenisLaporan, setJenisLaporan] = useState('Undangan');
   const [tanggalMulai, setTanggalMulai] = useState('');
   const [tanggalAkhir, setTanggalAkhir] = useState('');
 
@@ -101,10 +101,12 @@ const LaporanPage = () => {
               onChange={(e) => setJenisLaporan(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
-              <option>Bulanan</option>
-              <option>Triwulan</option>
-              <option>Semester</option>
-              <option>Tahunan</option>
+              <option value="Undangan">Undangan</option>
+              <option value="Permohonan">Permohonan</option>
+              <option value="Pemberitahuan">Pemberitahuan</option>
+              <option value="Verifikasi">Verifikasi</option>
+              <option value="Audit">Audit</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </div>
 

@@ -3,28 +3,35 @@ import { API_ENDPOINTS } from '../utils/constants';
 
 export const userService = {
   getUsers: async (params) => {
-    const response = await apiClient.get(API_ENDPOINTS.USERS.LIST, { params });
+    const response = await apiClient.get('/users', { params });
+    return response.data;
+  },
+
+  getUserByRole: async (role) => {
+    const response = await apiClient.get(`/users/by-role/${role}`);
+    return response.data;
+  },
+
+  getUserByBagian: async (kodeBagian) => {
+    const response = await apiClient.get(`/users/by-bagian/${kodeBagian}`);
     return response.data;
   },
 
   getUserById: async (id) => {
-    const response = await apiClient.get(API_ENDPOINTS.USERS.DETAIL(id));
+    const response = await apiClient.get(`/users/${id}`);
     return response.data;
   },
-
-  createUser: async (data) => {
-    const response = await apiClient.post(API_ENDPOINTS.USERS.CREATE, data);
-    return response.data;
-  },
-
   updateUser: async (id, data) => {
-    const response = await apiClient.put(API_ENDPOINTS.USERS.UPDATE(id), data);
+    const response = await apiClient.put(`/users/${id}`, data);
+    return response.data;
+  },
+  updateUserStatus: async (id, status) => {
+    const response = await apiClient.put(`/users/${id}/status`, { status });
     return response.data;
   },
 
   deleteUser: async (id) => {
-    const response = await apiClient.delete(API_ENDPOINTS.USERS.DELETE(id));
+    const response = await apiClient.delete(`/users/${id}`);
     return response.data;
   },
 };
-

@@ -7,6 +7,7 @@ import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import useAuthStore from '../../store/authStore';
 import toast from 'react-hot-toast';
+import { formatDate } from '../../utils/helpers';
 
 const SuratKeluarList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,7 +36,7 @@ const SuratKeluarList = () => {
   });
 
   const {
-    suratKeluar,
+    suratKeluarList: suratKeluar,
     isLoading,
     fetchSuratKeluar,
     createSuratKeluar,
@@ -285,10 +286,10 @@ const SuratKeluarList = () => {
                     {surat.nomorSurat}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {surat.tujuan}
+                    {surat.tujuanSurat}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {surat.tanggal}
+                    {formatDate(surat.tanggalSurat)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -620,9 +621,7 @@ const SuratKeluarList = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
-              <p className="text-sm text-gray-900">
-                {selectedSurat.tanggal || selectedSurat.tanggalSurat}
-              </p>
+              <p className="text-sm text-gray-900">{formatDate(selectedSurat.tanggalSurat)}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Tujuan</label>

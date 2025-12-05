@@ -6,15 +6,11 @@ import Badge from '../../components/common/Badge/Badge';
 import useSuratStore from '../../store/suratStore';
 import { formatDate } from '../../utils/helpers';
 import useAuthStore from '../../store/authStore';
-import {
-  PRIORITAS_LABELS,
-  JENIS_SURAT_LABELS,
-  SURAT_MASUK_STATUS_LABELS,
-} from '../../utils/constants';
+import { JENIS_SURAT_LABELS, SURAT_MASUK_STATUS_LABELS } from '../../utils/constants';
 
 const SuratMasukList = () => {
   const {
-    suratMasuk,
+    suratMasukList,
     isLoading,
     fetchSuratMasuk,
     createSuratMasuk,
@@ -34,11 +30,10 @@ const SuratMasukList = () => {
   const [selectedSurat, setSelectedSurat] = useState(null);
   const [formData, setFormData] = useState({
     nomorSurat: '',
-    tanggalTerima: '',
+    tanggalDiterima: '',
     asalSurat: '',
     perihal: '',
     kategori: '',
-    prioritas: '',
     file: null,
   });
   const [disposisiData, setDisposisiData] = useState({
@@ -55,7 +50,7 @@ const SuratMasukList = () => {
   }, [fetchSuratMasuk]);
 
   // Filter data based on search
-  let filteredData = searchQuery ? searchSuratMasuk(searchQuery) : suratMasuk;
+  let filteredData = searchQuery ? searchSuratMasuk(searchQuery) : suratMasukList;
 
   // Role-based filter: Bendahara hanya melihat kategori 'keuangan'
   if (
@@ -75,7 +70,6 @@ const SuratMasukList = () => {
       asalSurat: '',
       perihal: '',
       kategori: '',
-      prioritas: '',
       file: null,
     });
     setEditingId(null);
@@ -271,7 +265,7 @@ const SuratMasukList = () => {
                       {surat.asalSurat}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {formatDate(surat.tanggal || surat.tanggalTerima, 'dd/MM/yyyy')}
+                      {formatDate(surat.tanggal || surat.tanggalDiterima)}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-600">{surat.perihal}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -354,7 +348,7 @@ const SuratMasukList = () => {
               <input
                 type="date"
                 name="tanggalTerima"
-                value={formData.tanggalTerima}
+                value={formData.tanggalDiterima}
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -414,26 +408,6 @@ const SuratMasukList = () => {
                 <option value="laporan">Laporan</option>
                 <option value="surat_tugas">Surat Tugas</option>
                 <option value="lainnya">Lainnya</option>
-              </select>
-            </div>
-
-            {/* Prioritas */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Prioritas <span className="text-red-500">*</span>
-              </label>
-              <select
-                name="prioritas"
-                value={formData.prioritas}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-              >
-                <option value="">Pilih prioritas</option>
-                <option value="rendah">Rendah</option>
-                <option value="sedang">Sedang</option>
-                <option value="tinggi">Tinggi</option>
-                <option value="urgent">Urgent</option>
               </select>
             </div>
           </div>
@@ -521,14 +495,13 @@ const SuratMasukList = () => {
           {/* Catatan */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Catatan <span className="text-red-500">*</span>
+              Catatan (Opsional)<span className="text-red-500"></span>
             </label>
             <textarea
               name="instruksi"
               value={disposisiData.instruksi}
               onChange={handleDisposisiChange}
               placeholder="Tuliskan instruksi atau catatan disposisi"
-              required
               rows={4}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none"
             />
@@ -575,7 +548,7 @@ const SuratMasukList = () => {
                   Tanggal Terima
                 </label>
                 <p className="text-sm text-gray-900">
-                  {formatDate(selectedSurat.tanggal || selectedSurat.tanggalTerima)}
+                  {formatDate(selectedSurat.tanggal || selectedSurat.tanggalDiterima)}
                 </p>
               </div>
               <div className="col-span-2">
@@ -592,12 +565,7 @@ const SuratMasukList = () => {
                   {JENIS_SURAT_LABELS[selectedSurat.kategori] || selectedSurat.kategori}
                 </p>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Prioritas</label>
-                <Badge variant={selectedSurat.prioritas}>
-                  {PRIORITAS_LABELS[selectedSurat.prioritas] || selectedSurat.prioritas}
-                </Badge>
-              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <Badge variant={selectedSurat.status}>

@@ -14,32 +14,54 @@ import { cn, getInitials } from '../../../utils/helpers';
 const Sidebar = ({ isOpen, onClose, userRole, userName, onLogout }) => {
   const location = useLocation();
 
+  //   enum Role {
+  //   ADMIN                    // Admin sistem (Sekretaris Kantor)
+  //   KETUA_PENGURUS           // Ketua Yayasan
+  //   SEKRETARIS_PENGURUS      // Sekretaris Pengurus
+  //   BENDAHARA_PENGURUS       // Bendahara
+  //   KEPALA_BAGIAN_PSDM       // Kepala Bagian PSDM
+  //   KEPALA_BAGIAN_KEUANGAN   // Kepala Bagian Keuangan
+  //   KEPALA_BAGIAN_UMUM       // Kepala Bagian Umum
+  // }
+
   // Menu items berdasarkan role
   const menuItems = {
-    sekretaris_kantor: [
+    ADMIN: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
       { icon: Send, label: 'Surat Keluar', path: '/surat-keluar' },
       { icon: BarChart3, label: 'Laporan', path: '/laporan' },
       { icon: Settings, label: 'Pengaturan Pengguna', path: '/pengaturan' },
     ],
-    ketua_pengurus: [
+    KETUA_PENGURUS: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
       { icon: Send, label: 'Surat Keluar', path: '/surat-keluar' },
       { icon: BarChart3, label: 'Laporan', path: '/laporan' },
     ],
-    sekretaris_pengurus: [
+    SEKERTARIS_PENGURUS: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
       { icon: BarChart3, label: 'Laporan', path: '/laporan' },
     ],
-    bendahara_pengurus: [
+    BENDAHARA_PENGURUS: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
       { icon: BarChart3, label: 'Laporan', path: '/laporan' },
     ],
-    kepala_bagian: [
+    KEPALA_BAGIAN_PSDM: [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+      { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
+      { icon: Send, label: 'Surat Keluar', path: '/surat-keluar' },
+      { icon: BarChart3, label: 'Laporan', path: '/laporan' },
+    ],
+    KEPALA_BAGIAN_KEUANGAN: [
+      { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+      { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
+      { icon: Send, label: 'Surat Keluar', path: '/surat-keluar' },
+      { icon: BarChart3, label: 'Laporan', path: '/laporan' },
+    ],
+    KEPALA_BAGIAN_UMUM: [
       { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
       { icon: Mail, label: 'Surat Masuk', path: '/surat-masuk' },
       { icon: Send, label: 'Surat Keluar', path: '/surat-keluar' },
@@ -47,7 +69,7 @@ const Sidebar = ({ isOpen, onClose, userRole, userName, onLogout }) => {
     ],
   };
 
-  const currentMenu = menuItems[userRole] || menuItems.sekretaris_kantor;
+  const currentMenu = menuItems[userRole] || menuItems.ADMIN;
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
+import { userService } from '../services/userService';
 
 const useUserStore = create((set, get) => ({
   // State
@@ -9,88 +10,29 @@ const useUserStore = create((set, get) => ({
   error: null,
 
   // Fetch Users
-  fetchUsers: async () => {
-    set({ isLoading: true });
+  fetchUsers: async (page = 1, limit = 10, filters = {}) => {
+    set({ isLoading: true, error: null });
     try {
-      // Mock data
-      const mockUsers = [
-        {
-          id: 1,
-          nama: 'Rudi Santoso',
-          email: 'rudi@amanat.com',
-          username: 'admin',
-          role: 'sekretaris_kantor',
-          role_label: 'Sekretaris Kantor',
-          bagian: '-',
-          status: 'aktif',
-        },
-        {
-          id: 2,
-          nama: 'Dr. Ahmad Fauzi',
-          email: 'ahmad.fauzi@amanat.com',
-          username: 'ketua',
-          role: 'ketua_pengurus',
-          role_label: 'Ketua Pengurus',
-          bagian: '-',
-          status: 'aktif',
-        },
-        {
-          id: 3,
-          nama: 'Siti Nurhaliza',
-          email: 'siti@amanat.com',
-          username: 'sekretaris',
-          role: 'sekretaris_pengurus',
-          role_label: 'Sekretaris Pengurus',
-          bagian: '-',
-          status: 'aktif',
-        },
-        {
-          id: 4,
-          nama: 'Budi Prasetyo',
-          email: 'budi@amanat.com',
-          username: 'bendahara',
-          role: 'bendahara_pengurus',
-          role_label: 'Bendahara Pengurus',
-          bagian: '-',
-          status: 'aktif',
-        },
-        {
-          id: 5,
-          nama: 'Andi Wijaya',
-          email: 'andi@amanat.com',
-          username: 'kabag_psdm',
-          role: 'kepala_bagian',
-          role_label: 'Kepala Bagian',
-          bagian: 'PSDM',
-          status: 'aktif',
-        },
-        {
-          id: 6,
-          nama: 'Dewi Kartika',
-          email: 'dewi@amanat.com',
-          username: 'kabag_keuangan',
-          role: 'kepala_bagian',
-          role_label: 'Kepala Bagian',
-          bagian: 'Keuangan',
-          status: 'aktif',
-        },
-        {
-          id: 7,
-          nama: 'Hadi Saputra',
-          email: 'hadi@amanat.com',
-          username: 'kabag_umum',
-          role: 'kepala_bagian',
-          role_label: 'Kepala Bagian',
-          bagian: 'Umum',
-          status: 'nonaktif',
-        },
-      ];
+      const response = await userService.getUsers({
+        page,
+        limit,
+        ...filters,
+      });
 
-      set({ users: mockUsers, isLoading: false });
-      return mockUsers;
+      const { items, total } = response.data;
+
+      set({
+        users: items || [],
+        userTotal: total || 0,
+        userPage: page,
+        userLimit: limit,
+        isLoading: false,
+      });
+      return { success: true, data: items };
     } catch (error) {
       set({ error: error.message, isLoading: false });
       toast.error('Gagal memuat data pengguna');
+      return { success: false };
     }
   },
 
@@ -124,7 +66,7 @@ const useUserStore = create((set, get) => ({
     try {
       set((state) => ({
         users: state.users.map((user) =>
-          user.id === id 
+          user.id === id
             ? { ...user, ...userData, role_label: getRoleLabel(userData.role || user.role) }
             : user
         ),

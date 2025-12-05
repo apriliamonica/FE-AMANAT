@@ -33,17 +33,33 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      useAuthStore.setState({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+      });
+      toast.error('Session expired, silakan login kembali');
       window.location.href = '/login';
     }
 
     // Handle 403 Forbidden
     if (error.response?.status === 403) {
-      console.error('Access forbidden');
+      toast.error('Anda tidak memiliki akses');
+    }
+
+    // Handle 404 Not Found
+    if (error.response?.status === 404) {
+      console.error('Resource not found');
     }
 
     // Handle 500 Server Error
     if (error.response?.status === 500) {
-      console.error('Server error');
+      toast.error('Server error, silakan coba lagi nanti');
+    }
+
+    // Handle network error
+    if (!error.response) {
+      toast.error('Network error, periksa koneksi Anda');
     }
 
     return Promise.reject(error);

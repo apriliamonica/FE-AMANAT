@@ -20,90 +20,28 @@ const useAuthStore = create(
 
       login: async (credentials) => {
         set({ isLoading: true, error: null });
+
         try {
-          // Try API call first
-          try {
-            const response = await authService.login(credentials);
-            const { user: userData, token: authToken } = response.data || response;
+          const response = await authService.login(credentials);
 
-            set({
-              user: userData,
-              token: authToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
+          const { user: userData, token: authToken } = response.data || response;
 
-            // Save to localStorage
-            localStorage.setItem('token', authToken);
-            localStorage.setItem('user', JSON.stringify(userData));
-
-            toast.success('Login berhasil');
-            return { success: true, user: userData };
-          } catch (apiError) {
-            // Fallback to mock data if API is not available (for development)
-            if (apiError.response?.status >= 400) {
-              throw apiError; // Re-throw real API errors
-            }
-
-            // Mock data for development when API is not available
-            console.warn('API not available, using mock data');
-            const mockUser = {
-              id: 1,
-              name: 'Rudi Santoso',
-              email: credentials.username + '@amanat.com',
-              username: credentials.username,
-              role:
-                credentials.username === 'admin'
-                  ? 'sekretaris_kantor'
-                  : credentials.username === 'ketua'
-                    ? 'ketua_pengurus'
-                    : credentials.username === 'sekretaris'
-                      ? 'sekretaris_pengurus'
-                      : credentials.username === 'bendahara'
-                        ? 'bendahara_pengurus'
-                        : 'kepala_bagian',
-              role_label:
-                credentials.username === 'admin'
-                  ? 'Sekretaris Kantor'
-                  : credentials.username === 'ketua'
-                    ? 'Ketua Pengurus Yayasan'
-                    : credentials.username === 'sekretaris'
-                      ? 'Sekretaris Pengurus'
-                      : credentials.username === 'bendahara'
-                        ? 'Bendahara Pengurus'
-                        : 'Kepala Bagian PSDM',
-              bagian: credentials.username.includes('kabag')
-                ? credentials.username.includes('keuangan')
-                  ? 'keuangan'
-                  : credentials.username.includes('umum')
-                    ? 'umum'
-                    : 'psdm'
-                : null,
-            };
-
-            const mockToken = 'mock-jwt-token-' + Date.now();
-
-            set({
-              user: mockUser,
-              token: mockToken,
-              isAuthenticated: true,
-              isLoading: false,
-            });
-
-            localStorage.setItem('token', mockToken);
-            localStorage.setItem('user', JSON.stringify(mockUser));
-
-            toast.success('Login berhasil (mock mode)');
-            return { success: true, user: mockUser };
-          }
-        } catch (error) {
-          const errorMessage =
-            error.response?.data?.message || error.message || 'Login gagal';
           set({
-            error: errorMessage,
+            user: userData,
+            token: authToken,
+            isAuthenticated: true,
             isLoading: false,
-            isAuthenticated: false,
           });
+
+          // Save to localStorage
+          localStorage.setItem('token', authToken);
+          localStorage.setItem('user', JSON.stringify(userData));
+
+          toast.success('Login berhasil');
+          return { success: true, user: userData };
+        } catch (error) {
+          const errorMessage = error.response?.data?.message || 'Username atau password salah';
+          set({ error: errorMessage, isLoading: false });
           toast.error(errorMessage);
           return { success: false, error: errorMessage };
         }

@@ -9,12 +9,14 @@ const PengaturanUser = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    nama: '',
+    nama_lengkap: '',
     email: '',
     username: '',
     password: '',
     role: '',
-    bagian: '',
+    kodeBagian: '',
+    jabatan: '',
+    phone: '',
     status: 'aktif',
   });
 
@@ -41,12 +43,14 @@ const PengaturanUser = () => {
       }
 
       setFormData({
-        nama: '',
+        nama_lengkap: '',
         email: '',
         username: '',
         password: '',
         role: '',
-        bagian: '',
+        kodeBagian: '',
+        jabatan: '',
+        phone: '',
         status: 'aktif',
       });
     })();
@@ -56,12 +60,14 @@ const PengaturanUser = () => {
 
   const handleEdit = (user) => {
     setFormData({
-      nama: user.nama || '',
+      nama_lengkap: user.nama_lengkap || '',
       email: user.email || '',
       username: user.username || '',
       password: '',
       role: user.role || '',
-      bagian: user.bagian || '',
+      kodeBagian: user.kodeBagian || '',
+      jabatan: user.jabatan || '',
+      phone: user.phone || '',
       status: user.status || 'aktif',
     });
     setEditingId(user.id);
@@ -117,7 +123,7 @@ const PengaturanUser = () => {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nama
+                  Nama Lengkap
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Email
@@ -132,6 +138,12 @@ const PengaturanUser = () => {
                   Bagian
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Jabatan
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Telepon
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -143,7 +155,7 @@ const PengaturanUser = () => {
               {(users || []).map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {user.nama}
+                    {user.nama_lengkap}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.email}
@@ -151,11 +163,15 @@ const PengaturanUser = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                     {user.username}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.role}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {user.role_label || user.role}
+                    {user.kodeBagian}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    {user.bagian}
+                    {user.jabatan}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                    {user.phone}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={user.status === 'aktif' ? 'selesai' : 'ditolak'}>
@@ -203,7 +219,7 @@ const PengaturanUser = () => {
             <input
               type="text"
               name="nama"
-              value={formData.nama}
+              value={formData.nama_lengkap}
               onChange={handleChange}
               placeholder="Masukkan nama lengkap"
               required
@@ -275,11 +291,13 @@ const PengaturanUser = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
               >
                 <option value="">Pilih role</option>
-                <option value="sekretaris_kantor">Sekretaris Kantor</option>
-                <option value="ketua_pengurus">Ketua Pengurus</option>
-                <option value="sekretaris_pengurus">Sekretaris Pengurus</option>
-                <option value="bendahara_pengurus">Bendahara Pengurus</option>
-                <option value="kepala_bagian">Kepala Bagian</option>
+                <option value="ADMIN">Sekretaris Kantor</option>
+                <option value="KETUA_PENGURUS">Ketua Pengurus</option>
+                <option value="SEKRETARIS_PENGURUS">Sekretaris Pengurus</option>
+                <option value="BENDAHARA_PENGURUS">Bendahara Pengurus</option>
+                <option value="KEPALA_BAGIAN_PSDM">Kepala Bagian PSDM</option>
+                <option value="KEPALA_BAGIAN_KEUANGAN">Kepala Bagian Keuangan</option>
+                <option value="KEPALA_BAGIAN_UMUM">Kepala Bagian Umum</option>
               </select>
             </div>
 
@@ -288,16 +306,44 @@ const PengaturanUser = () => {
               <label className="block text-sm font-medium text-gray-700 mb-1">Bagian</label>
               <select
                 name="bagian"
-                value={formData.bagian}
+                value={formData.kodeBagian}
                 onChange={handleChange}
                 disabled={formData.role !== 'kepala_bagian'}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none disabled:bg-gray-100"
               >
                 <option value="">-</option>
-                <option value="psdm">PSDM</option>
-                <option value="keuangan">Keuangan</option>
-                <option value="umum">Umum</option>
+                <option value="PSDM">PSDM</option>
+                <option value="KEU">Keuangan</option>
+                <option value="UMUM">Umum</option>
               </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Jabatan */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+              <input
+                type="text"
+                name="jabatan"
+                value={formData.jabatan}
+                onChange={handleChange}
+                placeholder="Masukkan jabatan"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              />
+            </div>
+
+            {/* Telepon */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Telepon</label>
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="Masukkan nomor telepon"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              />
             </div>
           </div>
 

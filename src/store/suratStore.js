@@ -1,325 +1,346 @@
+// src/store/suratStore.js
+
 import { create } from 'zustand';
 import toast from 'react-hot-toast';
 import { suratService } from '../services/suratService';
-import { SURAT_MASUK_STATUS, SURAT_KELUAR_STATUS } from '../utils/constants';
 
 const useSuratStore = create((set, get) => ({
-  // State
-  suratMasuk: [],
-  suratKeluar: [],
-  selectedSurat: null,
+  // ==================== STATE ====================
+
+  // Surat Masuk
+  suratMasukList: [],
+  suratMasukTotal: 0,
+  suratMasukPage: 1,
+  suratMasukLimit: 10,
+
+  // Surat Keluar
+  suratKeluarList: [],
+  suratKeluarTotal: 0,
+  suratKeluarPage: 1,
+  suratKeluarLimit: 10,
+
+  // Detail
+  selectedSuratMasuk: null,
+  selectedSuratKeluar: null,
+
+  // Loading & Error
   isLoading: false,
   error: null,
 
-  // Surat Masuk Actions
-  fetchSuratMasuk: async () => {
-    set({ isLoading: true });
+  // ==================== SURAT MASUK ACTIONS ====================
+
+  // Fetch surat masuk dengan pagination
+  fetchSuratMasuk: async (page = 1, limit = 10, filters = {}) => {
+    set({ isLoading: true, error: null });
     try {
-      try {
-        const response = await suratService.getSuratMasuk();
-        const data = response.data || response;
-        set({ suratMasuk: Array.isArray(data) ? data : data.items || [], isLoading: false });
-        return Array.isArray(data) ? data : data.items || [];
-      } catch (apiError) {
-        // Fallback to mock data if API is not available
-        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
-          throw apiError; // Re-throw real API errors
-        }
+      const response = await suratService.getSuratMasuk({
+        page,
+        limit,
+        ...filters,
+      });
 
-        console.warn('API not available, using mock data');
-        const mockData = [
-          {
-            id: 1,
-            nomorSurat: '001/SM/V/2025',
-            asalSurat: 'Dinas Pendidikan',
-            tanggal: '2025-10-10',
-            tanggalTerima: '2025-10-10',
-            perihal: 'Undangan Rapat Koordinasi Pendidikan',
-            prioritas: 'urgent',
-            status: SURAT_MASUK_STATUS.DITERIMA,
-            kategori: 'undangan',
-            file: null,
-          },
-          {
-            id: 2,
-            nomorSurat: '002/SM/V/2025',
-            asalSurat: 'Kementerian Keuangan',
-            tanggal: '2025-10-09',
-            tanggalTerima: '2025-10-09',
-            perihal: 'Permohonan Data Keuangan',
-            prioritas: 'tinggi',
-            status: SURAT_MASUK_STATUS.DIPROSES,
-            kategori: 'permohonan',
-            file: null,
-          },
-        ];
+      const { items, total, totalPages } = response.data;
 
-        set({ suratMasuk: mockData, isLoading: false });
-        return mockData;
-      }
+      set({
+        suratMasukList: items || [],
+        suratMasukTotal: total || 0,
+        suratMasukPage: page,
+        suratMasukLimit: limit,
+        isLoading: false,
+      });
+
+      return { success: true, data: items };
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Gagal memuat surat masuk';
+      const errorMessage = error.response?.data?.message || 'Gagal memuat surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
-      throw error;
+      return { success: false, error: errorMessage };
     }
   },
 
+  // Get detail surat masuk
+  fetchSuratMasukDetail: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.getSuratMasukById(id);
+      const surat = response.data;
+
+      set({
+        selectedSuratMasuk: surat,
+        isLoading: false,
+      });
+
+      return { success: true, data: surat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal memuat detail surat';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Create surat masuk
   createSuratMasuk: async (data) => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
-      try {
-        const response = await suratService.createSuratMasuk(data);
-        const newSurat = response.data || response;
-        set((state) => ({
-          suratMasuk: [newSurat, ...state.suratMasuk],
-          isLoading: false,
-        }));
-        toast.success('Surat masuk berhasil ditambahkan');
-        return { success: true, data: newSurat };
-      } catch (apiError) {
-        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
-          throw apiError;
-        }
-
-        // Fallback to mock
-        const newSurat = {
-          id: Date.now(),
-          ...data,
-          status: SURAT_MASUK_STATUS.DITERIMA,
-          tanggal: data.tanggalTerima || data.tanggal,
-        };
-
-        set((state) => ({
-          suratMasuk: [newSurat, ...state.suratMasuk],
-          isLoading: false,
-        }));
-
-        toast.success('Surat masuk berhasil ditambahkan (mock mode)');
-        return { success: true, data: newSurat };
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Gagal menambahkan surat masuk';
-      set({ error: errorMessage, isLoading: false });
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    }
-  },
-
-  updateSuratMasuk: async (id, data) => {
-    set({ isLoading: true });
-    try {
-      try {
-        const response = await suratService.updateSuratMasuk(id, data);
-        const updatedSurat = response.data || response;
-        set((state) => ({
-          suratMasuk: state.suratMasuk.map((surat) => (surat.id === id ? updatedSurat : surat)),
-          isLoading: false,
-        }));
-        toast.success('Surat masuk berhasil diupdate');
-        return { success: true, data: updatedSurat };
-      } catch (apiError) {
-        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
-          throw apiError;
-        }
-
-        // Fallback to mock
-        set((state) => ({
-          suratMasuk: state.suratMasuk.map((surat) =>
-            surat.id === id ? { ...surat, ...data } : surat
-          ),
-          isLoading: false,
-        }));
-        toast.success('Surat masuk berhasil diupdate (mock mode)');
-        return { success: true };
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Gagal mengupdate surat masuk';
-      set({ error: errorMessage, isLoading: false });
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    }
-  },
-
-  deleteSuratMasuk: async (id) => {
-    set({ isLoading: true });
-    try {
-      try {
-        await suratService.deleteSuratMasuk(id);
-        set((state) => ({
-          suratMasuk: state.suratMasuk.filter((surat) => surat.id !== id),
-          isLoading: false,
-        }));
-        toast.success('Surat masuk berhasil dihapus');
-        return { success: true };
-      } catch (apiError) {
-        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
-          throw apiError;
-        }
-
-        // Fallback to mock
-        set((state) => ({
-          suratMasuk: state.suratMasuk.filter((surat) => surat.id !== id),
-          isLoading: false,
-        }));
-        toast.success('Surat masuk berhasil dihapus (mock mode)');
-        return { success: true };
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Gagal menghapus surat masuk';
-      set({ error: errorMessage, isLoading: false });
-      toast.error(errorMessage);
-      return { success: false, error: errorMessage };
-    }
-  },
-
-  // Surat Keluar Actions
-  fetchSuratKeluar: async () => {
-    set({ isLoading: true });
-    try {
-      // Mock data
-      const mockData = [
-        {
-          id: 1,
-          nomorSurat: '001/SK/V/2025',
-          tujuan: 'Dinas Kesehatan',
-          tanggal: '2025-10-10',
-          perihal: 'Permohonan Data Kesehatan',
-          kategori: 'permohonan',
-          status: SURAT_KELUAR_STATUS.TERKIRIM,
-        },
-        {
-          id: 2,
-          nomorSurat: '002/SK/V/2025',
-          tujuan: 'Bank BRI Cabang Jakarta',
-          tanggal: '2025-10-11',
-          perihal: 'Surat Keterangan Aktif Pegawai',
-          kategori: 'keterangan',
-          status: SURAT_KELUAR_STATUS.REVIEW_SEKRETARIS_PENGURUS,
-        },
-      ];
-
-      set({ suratKeluar: mockData, isLoading: false });
-      return mockData;
-    } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal memuat surat keluar');
-    }
-  },
-
-  createSuratKeluar: async (data) => {
-    set({ isLoading: true });
-    try {
-      const newSurat = {
-        id: Date.now(),
-        ...data,
-        status: SURAT_KELUAR_STATUS.DRAFT,
-        tanggal: data.tanggalSurat,
-        tujuan: data.tujuanSurat,
-      };
+      const response = await suratService.createSuratMasuk(data);
+      const newSurat = response.data;
 
       set((state) => ({
-        suratKeluar: [newSurat, ...state.suratKeluar],
+        suratMasukList: [newSurat, ...state.suratMasukList],
+        suratMasukTotal: state.suratMasukTotal + 1,
         isLoading: false,
       }));
 
-      toast.success('Surat keluar berhasil disimpan sebagai draft');
+      toast.success('Surat masuk berhasil dibuat');
       return { success: true, data: newSurat };
     } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal menyimpan surat keluar');
-      return { success: false };
-    }
-  },
-
-  sendSuratKeluar: async (id) => {
-    set({ isLoading: true });
-    try {
-      set((state) => ({
-        suratKeluar: state.suratKeluar.map((surat) =>
-          surat.id === id ? { ...surat, status: SURAT_KELUAR_STATUS.TERKIRIM } : surat
-        ),
-        isLoading: false,
-      }));
-
-      toast.success('Surat keluar berhasil dikirim');
-      return { success: true };
-    } catch (error) {
-      set({ error: error.message, isLoading: false });
-      toast.error('Gagal mengirim surat keluar');
-      return { success: false };
-    }
-  },
-
-  deleteSuratKeluar: async (id) => {
-    set({ isLoading: true });
-    try {
-      try {
-        await suratService.deleteSuratKeluar(id);
-        set((state) => ({
-          suratKeluar: state.suratKeluar.filter((surat) => surat.id !== id),
-          isLoading: false,
-        }));
-
-        toast.success('Surat keluar berhasil dihapus');
-        return { success: true };
-      } catch (apiError) {
-        if (apiError.response?.status >= 400 && apiError.response?.status < 500) {
-          throw apiError;
-        }
-
-        // Fallback to mock
-        set((state) => ({
-          suratKeluar: state.suratKeluar.filter((surat) => surat.id !== id),
-          isLoading: false,
-        }));
-        toast.success('Surat keluar berhasil dihapus (mock mode)');
-        return { success: true };
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Gagal menghapus surat keluar';
+      const errorMessage = error.response?.data?.message || 'Gagal membuat surat masuk';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
     }
   },
 
-  // Common Actions
-  setSelectedSurat: (surat) => set({ selectedSurat: surat }),
+  // Update surat masuk
+  updateSuratMasuk: async (id, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.updateSuratMasuk(id, data);
+      const updatedSurat = response.data;
+
+      set((state) => ({
+        suratMasukList: state.suratMasukList.map((surat) =>
+          surat.id === id ? updatedSurat : surat
+        ),
+        selectedSuratMasuk:
+          state.selectedSuratMasuk?.id === id ? updatedSurat : state.selectedSuratMasuk,
+        isLoading: false,
+      }));
+
+      toast.success('Surat masuk berhasil diupdate');
+      return { success: true, data: updatedSurat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal mengupdate surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Update status surat masuk
+  updateSuratMasukStatus: async (id, status) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.updateSuratMasukStatus(id, status);
+      const updatedSurat = response.data;
+
+      set((state) => ({
+        suratMasukList: state.suratMasukList.map((surat) =>
+          surat.id === id ? updatedSurat : surat
+        ),
+        selectedSuratMasuk:
+          state.selectedSuratMasuk?.id === id ? updatedSurat : state.selectedSuratMasuk,
+        isLoading: false,
+      }));
+
+      toast.success(`Status surat diubah menjadi ${status}`);
+      return { success: true, data: updatedSurat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal mengubah status';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Delete surat masuk
+  deleteSuratMasuk: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await suratService.deleteSuratMasuk(id);
+
+      set((state) => ({
+        suratMasukList: state.suratMasukList.filter((surat) => surat.id !== id),
+        suratMasukTotal: state.suratMasukTotal - 1,
+        selectedSuratMasuk: state.selectedSuratMasuk?.id === id ? null : state.selectedSuratMasuk,
+        isLoading: false,
+      }));
+
+      toast.success('Surat masuk berhasil dihapus');
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal menghapus surat masuk';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // ==================== SURAT KELUAR ACTIONS ====================
+
+  // Fetch surat keluar dengan pagination
+  fetchSuratKeluar: async (page = 1, limit = 10, filters = {}) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.getSuratKeluar({
+        page,
+        limit,
+        ...filters,
+      });
+
+      const { items, total } = response.data;
+
+      set({
+        suratKeluarList: items || [],
+        suratKeluarTotal: total || 0,
+        suratKeluarPage: page,
+        suratKeluarLimit: limit,
+        isLoading: false,
+      });
+
+      return { success: true, data: items };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal memuat surat keluar';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Get detail surat keluar
+  fetchSuratKeluarDetail: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.getSuratKeluarById(id);
+      const surat = response.data;
+
+      set({
+        selectedSuratKeluar: surat,
+        isLoading: false,
+      });
+
+      return { success: true, data: surat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal memuat detail surat';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Create surat keluar
+  createSuratKeluar: async (data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.createSuratKeluar(data);
+      const newSurat = response.data;
+
+      set((state) => ({
+        suratKeluarList: [newSurat, ...state.suratKeluarList],
+        suratKeluarTotal: state.suratKeluarTotal + 1,
+        isLoading: false,
+      }));
+
+      toast.success('Surat keluar berhasil dibuat');
+      return { success: true, data: newSurat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal membuat surat keluar';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Update surat keluar
+  updateSuratKeluar: async (id, data) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.updateSuratKeluar(id, data);
+      const updatedSurat = response.data;
+
+      set((state) => ({
+        suratKeluarList: state.suratKeluarList.map((surat) =>
+          surat.id === id ? updatedSurat : surat
+        ),
+        selectedSuratKeluar:
+          state.selectedSuratKeluar?.id === id ? updatedSurat : state.selectedSuratKeluar,
+        isLoading: false,
+      }));
+
+      toast.success('Surat keluar berhasil diupdate');
+      return { success: true, data: updatedSurat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal mengupdate surat keluar';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Update status surat keluar
+  updateSuratKeluarStatus: async (id, status) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await suratService.updateSuratKeluarStatus(id, status);
+      const updatedSurat = response.data;
+
+      set((state) => ({
+        suratKeluarList: state.suratKeluarList.map((surat) =>
+          surat.id === id ? updatedSurat : surat
+        ),
+        selectedSuratKeluar:
+          state.selectedSuratKeluar?.id === id ? updatedSurat : state.selectedSuratKeluar,
+        isLoading: false,
+      }));
+
+      toast.success(`Status surat diubah menjadi ${status}`);
+      return { success: true, data: updatedSurat };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal mengubah status';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // Delete surat keluar
+  deleteSuratKeluar: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      await suratService.deleteSuratKeluar(id);
+
+      set((state) => ({
+        suratKeluarList: state.suratKeluarList.filter((surat) => surat.id !== id),
+        suratKeluarTotal: state.suratKeluarTotal - 1,
+        selectedSuratKeluar:
+          state.selectedSuratKeluar?.id === id ? null : state.selectedSuratKeluar,
+        isLoading: false,
+      }));
+
+      toast.success('Surat keluar berhasil dihapus');
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Gagal menghapus surat keluar';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
+  },
+
+  // ==================== COMMON ACTIONS ====================
+
+  clearSelectedSurat: () =>
+    set({
+      selectedSuratMasuk: null,
+      selectedSuratKeluar: null,
+    }),
 
   clearError: () => set({ error: null }),
 
-  // Search & Filter
-  searchSuratMasuk: (query) => {
-    const { suratMasuk } = get();
-    if (!query) return suratMasuk;
+  resetSuratMasukPage: () => set({ suratMasukPage: 1 }),
 
-    return suratMasuk.filter(
-      (surat) =>
-        surat.nomorSurat.toLowerCase().includes(query.toLowerCase()) ||
-        surat.asalSurat.toLowerCase().includes(query.toLowerCase()) ||
-        surat.perihal.toLowerCase().includes(query.toLowerCase())
-    );
-  },
-
-  searchSuratKeluar: (query) => {
-    const { suratKeluar } = get();
-    if (!query) return suratKeluar;
-
-    return suratKeluar.filter(
-      (surat) =>
-        surat.nomorSurat.toLowerCase().includes(query.toLowerCase()) ||
-        surat.tujuan.toLowerCase().includes(query.toLowerCase()) ||
-        surat.perihal.toLowerCase().includes(query.toLowerCase())
-    );
-  },
+  resetSuratKeluarPage: () => set({ suratKeluarPage: 1 }),
 }));
 
 export default useSuratStore;
-
-// Lokasi: src/store/suratStore.js
