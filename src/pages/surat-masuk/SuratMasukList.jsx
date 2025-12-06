@@ -14,6 +14,7 @@ import {
   STATUS_COLOR,
 } from '../../utils/constants';
 import { suratService } from '../../services/suratService';
+import { userService } from '../../services/userService';
 import toast from 'react-hot-toast';
 
 const SuratMasukList = () => {
@@ -42,6 +43,10 @@ const SuratMasukList = () => {
   const [selectedSurat, setSelectedSurat] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // User list untuk dropdown disposisi
+  const [userList, setUserList] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
+
   // Form data
   const [formData, setFormData] = useState({
     nomorSurat: '',
@@ -53,18 +58,23 @@ const SuratMasukList = () => {
     namaPengirim: '',
   });
 
-  // Disposisi data
+  // Disposisi data (simplified)
   const [disposisiData, setDisposisiData] = useState({
     toUserId: '',
     instruksi: '',
-    jenisDispo: 'TRANSFER',
-    tenggatWaktu: '',
   });
 
   // ==================== LIFECYCLE ====================
   useEffect(() => {
     fetchData();
   }, [currentPage, filterStatus, filterKategori]);
+
+  // Fetch user list untuk disposisi modal
+  useEffect(() => {
+    if (showDisposisiModal) {
+      fetchUserList();
+    }
+  }, [showDisposisiModal]);
 
   // ==================== FUNCTIONS ====================
 
@@ -75,6 +85,24 @@ const SuratMasukList = () => {
     if (searchQuery) filters.search = searchQuery;
 
     await fetchSuratMasuk(currentPage, suratMasukLimit, filters);
+  };
+
+  // Fetch user list untuk dropdown
+  const fetchUserList = async () => {
+    setLoadingUsers(true);
+    try {
+      // Fetch semua user (atau bisa filter role tertentu)
+      const response = await userService.getUsers({ limit: 100 });
+
+      // Filter hanya user yang isActive (optional)
+      const activeUsers = response.data?.items || response.data || [];
+      setUserList(activeUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      toast.error('Gagal memuat daftar user');
+    } finally {
+      setLoadingUsers(false);
+    }
   };
 
   const handleSearch = (e) => {
@@ -98,8 +126,6 @@ const SuratMasukList = () => {
     setDisposisiData({
       toUserId: '',
       instruksi: '',
-      jenisDispo: 'TRANSFER',
-      tenggatWaktu: '',
     });
   };
 
@@ -109,7 +135,6 @@ const SuratMasukList = () => {
   };
 
   const handleOpenView = async (surat) => {
-    // Fetch detail surat untuk lampiran, tracking, dll
     setShowViewModal(true);
     setSelectedSurat(surat);
   };
@@ -167,7 +192,7 @@ const SuratMasukList = () => {
     e.preventDefault();
 
     if (!disposisiData.toUserId || !disposisiData.instruksi) {
-      toast.error('Kepada dan Instruksi wajib diisi');
+      toast.error('Pilih penerima dan isi instruksi');
       return;
     }
 
@@ -176,11 +201,8 @@ const SuratMasukList = () => {
         suratMasukId: selectedSurat.id,
         toUserId: disposisiData.toUserId,
         instruksi: disposisiData.instruksi,
-        jenisDispo: disposisiData.jenisDispo,
+        jenisDispo: 'TRANSFER', // Default jenis
         tahapProses: 'DISPOSISI_KETUA',
-        tenggatWaktu: disposisiData.tenggatWaktu
-          ? new Date(disposisiData.tenggatWaktu).toISOString()
-          : null,
       };
 
       const response = await suratService.createDisposisi(payload);
@@ -207,11 +229,11 @@ const SuratMasukList = () => {
     }
   };
 
-  const handleStatusChange = async (suratId, newStatus) => {
-    const result = await updateSuratMasukStatus(suratId, newStatus);
-    if (result.success) {
-      await fetchData();
-    }
+  // ==================== HELPER ====================
+
+  // Format user display name dengan role
+  const formatUserName = (userData) => {
+    return `${userData.nama_lengkap} (${userData.role})`;
   };
 
   // ==================== RENDER ====================
@@ -549,6 +571,7 @@ const SuratMasukList = () => {
         size="lg"
       >
         <form onSubmit={handleSubmitDisposisi} className="space-y-4">
+          {/* Info Surat */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <p className="text-sm text-gray-600">
               <strong>Nomor Surat:</strong> {selectedSurat?.nomorSurat}
@@ -558,36 +581,31 @@ const SuratMasukList = () => {
             </p>
           </div>
 
-          {/* Kepada */}
+          {/* Dropdown Penerima Disposisi */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Kepada <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <select
               name="toUserId"
               value={disposisiData.toUserId}
               onChange={handleDisposisiChange}
-              placeholder="Nama atau User ID penerima"
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-
-          {/* Jenis Disposisi */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Jenis Disposisi</label>
-            <select
-              name="jenisDispo"
-              value={disposisiData.jenisDispo}
-              onChange={handleDisposisiChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              disabled={loadingUsers}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
-              <option value="TRANSFER">Transfer</option>
-              <option value="REQUEST_LAMPIRAN">Request Lampiran</option>
-              <option value="APPROVAL">Approval</option>
-              <option value="REVISI">Revisi</option>
+              <option value="">
+                {loadingUsers ? 'Memuat daftar user...' : 'Pilih penerima disposisi'}
+              </option>
+              {userList.map((userData) => (
+                <option key={userData.id} value={userData.id}>
+                  {formatUserName(userData)}
+                </option>
+              ))}
             </select>
+            {userList.length === 0 && !loadingUsers && (
+              <p className="text-xs text-red-500 mt-1">Tidak ada user tersedia</p>
+            )}
           </div>
 
           {/* Instruksi */}
@@ -606,18 +624,6 @@ const SuratMasukList = () => {
             />
           </div>
 
-          {/* Tenggat Waktu */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tenggat Waktu</label>
-            <input
-              type="date"
-              name="tenggatWaktu"
-              value={disposisiData.tenggatWaktu}
-              onChange={handleDisposisiChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-
           {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <Button
@@ -630,7 +636,7 @@ const SuratMasukList = () => {
             >
               Batal
             </Button>
-            <Button type="submit" variant="primary" disabled={isLoading}>
+            <Button type="submit" variant="primary" disabled={isLoading || loadingUsers}>
               {isLoading ? 'Mengirim...' : 'Kirim Disposisi'}
             </Button>
           </div>
